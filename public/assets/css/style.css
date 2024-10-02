@@ -6547,8 +6547,11 @@ footer .widget_recent_post .post_img img {
 	padding: 0;
 	vertical-align: middle;
 }
-.custome-checkbox .form-check-input {
+/* .custome-checkbox .form-check-input {
 	display: none;
+} */
+.login_register_wrap .custome-checkbox .form-check-input {
+	display: block !important;
 }
 .custome-checkbox .form-check-label span {
 	vertical-align: middle;
