@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
@@ -25,8 +24,8 @@ class Category
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?array $imageUrls = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageUrl = null;  // Changement de type array -> string
 
     #[ORM\Column(nullable: true)]
     private ?bool $isMega = null;
@@ -43,6 +42,7 @@ class Category
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->setCreatedAt(new \DateTimeImmutable());
     }
 
     public function getId(): ?int
@@ -58,7 +58,6 @@ class Category
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -70,7 +69,6 @@ class Category
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
-
         return $this;
     }
 
@@ -79,22 +77,28 @@ class Category
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
+    // public function setDescription(?string $description): static
+    // {
+    //     $this->description = $description;
+    //     return $this;
+    // }
 
+        public function setDescription(?string $description): static
+    {
+        // Supprime les balises HTML du champ description
+        $this->description = strip_tags($description);
         return $this;
     }
 
-    public function getImageUrls(): ?array
+
+    public function getImageUrl(): ?string  // Correction ici
     {
-        return $this->imageUrls;
+        return $this->imageUrl;
     }
 
-    public function setImageUrls(?array $imageUrls): static
+    public function setImageUrl(?string $imageUrl): static  // Correction ici
     {
-        $this->imageUrls = $imageUrls;
-
+        $this->imageUrl = $imageUrl;
         return $this;
     }
 
@@ -106,7 +110,6 @@ class Category
     public function setIsMega(?bool $isMega): static
     {
         $this->isMega = $isMega;
-
         return $this;
     }
 
@@ -118,7 +121,6 @@ class Category
     public function setUpdatedAt(?\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
-
         return $this;
     }
 
@@ -130,7 +132,6 @@ class Category
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
