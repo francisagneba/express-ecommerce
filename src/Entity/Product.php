@@ -112,7 +112,7 @@ class Product
 
     public function setDescription(string $description): static
     {
-        $this->description = $description;
+        $this->description =  strip_tags($description);
 
         return $this;
     }
@@ -124,7 +124,7 @@ class Product
 
     public function setMoreDescription(?string $more_description): static
     {
-        $this->more_description = $more_description;
+        $this->more_description =  strip_tags($more_description);
 
         return $this;
     }
@@ -136,7 +136,7 @@ class Product
 
     public function setAdditionalInfos(?string $additional_infos): static
     {
-        $this->additional_infos = $additional_infos;
+        $this->additional_infos =  strip_tags($additional_infos);
 
         return $this;
     }

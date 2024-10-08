@@ -83,7 +83,7 @@ class Category
     //     return $this;
     // }
 
-        public function setDescription(?string $description): static
+    public function setDescription(?string $description): static
     {
         // Supprime les balises HTML du champ description
         $this->description = strip_tags($description);
@@ -160,5 +160,10 @@ class Category
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->name; // or any other field you want to use
     }
 }
