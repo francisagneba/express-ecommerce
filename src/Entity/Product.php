@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Cocur\Slugify\Slugify;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -89,6 +90,10 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
+        // $slugify = new Slugify();
+        // $slugify->slugify($name);
+
+        $this->setSlug((new Slugify())->slugify($name));
 
         return $this;
     }
