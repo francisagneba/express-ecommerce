@@ -6,30 +6,29 @@
 					<div class="widget">
 						<div class="footer_logo">
 							<a href="#">
-								<h2>Jstore</h2>
+								<h2>{{ app.session.get("setting").websiteName }}</h2>
 							</a>
 						</div>
 						<p>
-							Retrouvez tous les accessoires et habits pour femmes, jeunes
-							                            filles etc...
+							{{ app.session.get("setting").description }}
 						</p>
 					</div>
 					<div class="widget">
 						<ul class="social_icons social_white">
 							<li>
-								<a target="_blank" href="https://facebook.com">
+								<a target="_blank" href="{{ app.session.get("setting").facebookLink }}">
 									<i class="ion-social-facebook"></i>
 								</a>
 							</li>
 							<li></li>
 							<li></li>
 							<li>
-								<a target="_blank" href="https://www.youtube.com/channel/UCkqALrIVPEyGnnbmiFl3lQA/?sub_confirmation=1">
+								<a target="_blank" href="{{ app.session.get("setting").youtubeLink }}">
 									<i class="ion-social-youtube-outline"></i>
 								</a>
 							</li>
 							<li>
-								<a target="_blank" href="https://www.instagram.com/mudey_formation/">
+								<a target="_blank" href="{{ app.session.get("setting").instagramLink }}">
 									<i class="ion-social-instagram-outline"></i>
 								</a>
 							</li>
@@ -113,7 +112,7 @@
 							</li>
 							<li>
 								<i class="ti-mobile"></i>
-								<p>+33 7 49 31 69 74</p>
+								<p>+{{ app.session.get("setting").phone }}</p>
 							</li>
 						</ul>
 					</div>
@@ -127,7 +126,7 @@
 				<div class="col-md-6">
 					<p class="mb-md-0 text-center text-md-start">
 						© 2023 All Rights
-						                        Reserved by Espero-Soft Informatiques
+																														                        Reserved by Espero-Soft Informatiques
 					</p>
 				</div>
 				<div class="col-md-6">
