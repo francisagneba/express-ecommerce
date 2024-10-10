@@ -8,69 +8,23 @@
 	<div class="banner_section slide_medium shop_banner_slider staggered-animation-wrap">
 		<div id="carouselExampleControls" data-bs-ride="carousel" class="carousel slide carousel-fade light_arrow">
 			<div class="carousel-inner">
-				<div class="carousel-item active background_bg" data-img-src="/assets/files/80746066632713998236489572054461980464175761684755285905.png" style="background-image: url(&quot;/assets/files/80746066632713998236489572054461980464175761684755285905.png&quot;);">
-					<div class="banner_slide_content">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-7 col-9">
-									<div class="banner_content overflow-hidden">
-										<h5 data-animation="slideInLeft" data-animation-delay="0.5s" class="mb-3 staggered-animation font-weight-light animated slideInLeft" style="animation-delay: 0.5s; opacity: 1;">50% off in all products</h5>
-										<h2 data-animation="slideInLeft" data-animation-delay="1s" class="staggered-animation animated slideInLeft" style="animation-delay: 1s; opacity: 1;">Man Fashion</h2>
-										<a data-animation="slideInLeft" data-animation-delay="1.5s" class="btn btn-fill-out rounded-0 staggered-animation text-uppercase animated slideInLeft" href="http://localhost:4300/" style="animation-delay: 1.5s; opacity: 1;">Shop Now</a>
+				{% for slider in sliders %}
+					<div class="carousel-item {{ loop.index < 2 ? 'active' : ''}} background_bg" data-img-src="/assets/images/sliders/{{ slider.imageUrl }}" style="background-image: url(/assets/images/sliders/{{ slider.imageUrl }});">
+						<div class="banner_slide_content">
+							<div class="container">
+								<div class="row">
+									<div class="col-lg-7 col-9">
+										<div class="banner_content overflow-hidden">
+											<h5 data-animation="slideInLeft" data-animation-delay="0.5s" class="mb-3 staggered-animation font-weight-light animated slideInLeft" style="animation-delay: 0.5s; opacity: 1;">{{ slider.description }}</h5>
+											<h2 data-animation="slideInLeft" data-animation-delay="1s" class="staggered-animation animated slideInLeft" style="animation-delay: 1s; opacity: 1;">{{ slider.title }}</h2>
+											<a data-animation="slideInLeft" data-animation-delay="1.5s" target="_blank" class="btn btn-fill-out rounded-0 staggered-animation text-uppercase animated slideInLeft" href="{{ slider.buttonLink }}" style="animation-delay: 1.5s; opacity: 1;">{{ slider.buttonText }}</a>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="carousel-item background_bg" data-img-src="/assets/files/17099405955142852076105633054671075224313121684753428765.png" style="background-image: url(&quot;/assets/files/17099405955142852076105633054671075224313121684753428765.png&quot;);">
-					<div class="banner_slide_content">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-7 col-9">
-									<div class="banner_content overflow-hidden">
-										<h5 data-animation="slideInLeft" data-animation-delay="0.5s" class="mb-3 staggered-animation font-weight-light animated slideInLeft" style="animation-delay: 0.5s; opacity: 1;">Get up to 50% off Today Only!
-										</h5>
-										<h2 data-animation="slideInLeft" data-animation-delay="1s" class="staggered-animation animated slideInLeft" style="animation-delay: 1s; opacity: 1;">Woman Fashion</h2>
-										<a data-animation="slideInLeft" data-animation-delay="1.5s" class="btn btn-fill-out rounded-0 staggered-animation text-uppercase animated slideInLeft" href="http://localhost:4300/" style="animation-delay: 1.5s; opacity: 1;">Shop Now</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="carousel-item background_bg" data-img-src="/assets/files/2850766279112079091504712247552853779750349121684753505113.png" style="background-image: url(&quot;/assets/files/2850766279112079091504712247552853779750349121684753505113.png&quot;);">
-					<div class="banner_slide_content">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-7 col-9">
-									<div class="banner_content overflow-hidden">
-										<h5 data-animation="slideInLeft" data-animation-delay="0.5s" class="mb-3 staggered-animation font-weight-light animated slideInLeft" style="animation-delay: 0.5s; opacity: 1;">Taking your Viewing Experience to
-																																	                                            Next Level</h5>
-										<h2 data-animation="slideInLeft" data-animation-delay="1s" class="staggered-animation animated slideInLeft" style="animation-delay: 1s; opacity: 1;">Summer Sale</h2>
-										<a data-animation="slideInLeft" data-animation-delay="1.5s" class="btn btn-fill-out rounded-0 staggered-animation text-uppercase animated slideInLeft" href="http://localhost:4300/" style="animation-delay: 1.5s; opacity: 1;">Shop Now</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="carousel-item background_bg" data-img-src="/assets/files/80746066632713998236489572054461980464175761684755285905.png" style="background-image: url(&quot;/assets/files/80746066632713998236489572054461980464175761684755285905.png&quot;);">
-					<div class="banner_slide_content">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-7 col-9">
-									<div class="banner_content overflow-hidden">
-										<h5 data-animation="slideInLeft" data-animation-delay="0.5s" class="mb-3 staggered-animation font-weight-light animated slideInLeft" style="animation-delay: 0.5s; opacity: 1;">Taking your Viewing Experience to
-																																	                                            Next Level</h5>
-										<h2 data-animation="slideInLeft" data-animation-delay="1s" class="staggered-animation animated slideInLeft" style="animation-delay: 1s; opacity: 1;">Summer Sale</h2>
-										<a data-animation="slideInLeft" data-animation-delay="1.5s" class="btn btn-fill-out rounded-0 staggered-animation text-uppercase animated slideInLeft" href="http://localhost:4300/" style="animation-delay: 1.5s; opacity: 1;">Shop Now</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+				{% endfor %}
 			</div>
 			<a href="#carouselExampleControls" role="button" data-bs-slide="prev" class="carousel-control-prev">
 				<i class="ion-chevron-left"></i>
@@ -84,24 +38,18 @@
 		<div class="section pb_20">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-6">
-						<div class="single_banner"><img alt="shop_banner_img1" src="/assets/files/134985227484251691648652568177479961559477851684757880896.png">
-							<div class="single_banner_info">
-								<h5 class="single_bn_title1">Super Sale</h5>
-								<h3 class="single_bn_title">New Collection</h3>
-								<a class="single_bn_link" href="http://localhost:4400/">Shop Now</a>
+					{% for collection in collections %}
+						<div class="col-md-6">
+							<div class="single_banner">
+								<img alt="{{ collection.getTitle() }}" src="/assets/images/collections/{{ collection.getImageUrl() }}">
+								<div class="single_banner_info">
+									<h5 class="single_bn_title1">{{ collection.getTitle() }}</h5>
+									<h3 class="single_bn_title">{{ collection.getDescription() }}</h3>
+									<a class="single_bn_link" href="{{ collection.getButtonLink() }}">{{ collection.getButtonText() }}</a>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="single_banner"><img alt="shop_banner_img1" src="/assets/files/1231816139442978863631268994779183882351500061684757886381.png">
-							<div class="single_banner_info">
-								<h5 class="single_bn_title1">Super Sale</h5>
-								<h3 class="single_bn_title">New Collection</h3>
-								<a class="single_bn_link" href="http://localhost:4400/">Shop Now</a>
-							</div>
-						</div>
-					</div>
+					{% endfor %}
 				</div>
 			</div>
 		</div>
@@ -120,7 +68,7 @@
 							<ul role="tablist" class="nav nav-tabs justify-content-center">
 								<li class="nav-item">
 									<a id="arrival-tab" data-bs-toggle="tab" href="#arrival" role="tab" aria-controls="arrival" aria-selected="true" class="nav-link active">New
-																														                                        Arrival</a>
+																																																																																																																																																																																				                                        Arrival</a>
 								</li>
 								<li class="nav-item">
 									<a id="sellers-tab" data-bs-toggle="tab" href="#sellers" role="tab" aria-controls="sellers" aria-selected="false" class="nav-link">Best Sellers</a>
@@ -171,7 +119,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,bikini-unicolore-cte" href="/product/bikini-unicolore-ctel-shop">
 														Bikini unicolore
-																																										                                                        côtelé</a>
+																																																																																																																																																																																																																																																												                                                        côtelé</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$28.24</span>
@@ -188,8 +136,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -251,8 +199,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -298,7 +246,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,culotte-unicolore-sa" href="/product/culotte-unicolore-sans-couture-category">
 														Culotte
-																																										                                                        unicolore (sans couture)</a>
+																																																																																																																																																																																																																																																												                                                        unicolore (sans couture)</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$44.54</span>
@@ -315,8 +263,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -362,7 +310,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-mudey">
 														Culotte en
-																																										                                                        dentelle</a>
+																																																																																																																																																																																																																																																												                                                        dentelle</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$17.17</span>
@@ -379,8 +327,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -426,7 +374,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-espero">
 														Culotte en
-																																										                                                        dentelle</a>
+																																																																																																																																																																																																																																																												                                                        dentelle</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$23.91</span>
@@ -443,8 +391,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -506,8 +454,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -569,8 +517,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -632,8 +580,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -699,8 +647,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -762,8 +710,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -825,8 +773,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -888,8 +836,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -951,8 +899,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1014,8 +962,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1077,8 +1025,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1140,8 +1088,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1191,7 +1139,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-losange-tulle">
 														Culotte en
-																																										                                                        dentelle losange à tulle</a>
+																																																																																																																																																																																																																																																												                                                        dentelle losange à tulle</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$17.92</span>
@@ -1208,8 +1156,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1271,8 +1219,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1334,8 +1282,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1397,8 +1345,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1444,7 +1392,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,jupe-fendue-taille-h" href="/product/jupe-fendue-taille-haute">
 														Jupe fendue taille
-																																										                                                        haute</a>
+																																																																																																																																																																																																																																																												                                                        haute</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$55.54</span>
@@ -1461,8 +1409,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1508,7 +1456,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,jupe-moulante-unicol" href="/product/jupe-moulante-unicolore">
 														Jupe moulante
-																																										                                                        unicolore</a>
+																																																																																																																																																																																																																																																												                                                        unicolore</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$60.75</span>
@@ -1525,8 +1473,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1588,8 +1536,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1635,7 +1583,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,jupe-droite-en-vichy" href="/product/jupe-droite-en-vichy-zipp">
 														Jupe droite en vichy
-																																										                                                        zippé</a>
+																																																																																																																																																																																																																																																												                                                        zippé</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$25.78</span>
@@ -1652,8 +1600,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1719,8 +1667,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1782,8 +1730,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1845,8 +1793,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1908,8 +1856,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1971,8 +1919,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -2034,8 +1982,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -2097,8 +2045,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -2160,8 +2108,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																										                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																										                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
