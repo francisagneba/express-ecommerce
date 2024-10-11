@@ -16,12 +16,18 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class HomeController extends AbstractController
 {
+    private $repoProduct;
+
+    public function __construct(ProductRepository $repoProduct)
+    {
+        $this->repoProduct = $repoProduct;
+    }
+
     #[Route('/', name: 'app_home')]
     public function index(
         SettingRepository $settingRepo,
         SlidersRepository $slidersRepo,
         CollectionsRepository $collectionsRepo,
-        ProductRepository $productRepo,
         PageRepository $pageRepo,
         Request $request
     ): Response {
@@ -29,7 +35,6 @@ class HomeController extends AbstractController
         $data = $settingRepo->findAll();
         $sliders = $slidersRepo->findAll();
         $collections = $collectionsRepo->findAll();
-        $products = $productRepo->findAll();
 
         //dd($data);
         $session->set("setting", $data[0]);
@@ -37,6 +42,12 @@ class HomeController extends AbstractController
         $headerPages = $pageRepo->findBy(['isHead' => true]);
         $footerPages = $pageRepo->findBy(['isFoot' => true]);
         //dd($headerPages);
+
+        $productsBestSeller = $this->repoProduct->findBy(['isBestSeller' => true]);
+        $productsNewArrival = $this->repoProduct->findBy(['isNewArrival' => true]);
+        $productsFeatured = $this->repoProduct->findBy(['isFeatured' => true]);
+        $productsSpecialOffer = $this->repoProduct->findBy(['isSpecialOffer' => true]);
+
         $session->set("headerpages", $headerPages);
         $session->set("footerPages", $footerPages);
 
@@ -44,7 +55,11 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'sliders' => $sliders,
             'collections' => $collections,
-            'products' => $products,
+            'productsBestSeller' => $productsBestSeller,
+            'productsNewArrival' => $productsNewArrival,
+            'productsFeatured' =>  $productsFeatured,
+            'productsSpecialOffer' => $productsSpecialOffer,
+
         ]);
     }
 }
