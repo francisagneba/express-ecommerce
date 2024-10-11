@@ -58,6 +58,12 @@ class Setting
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramLink = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $copyright = null;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
@@ -87,7 +93,7 @@ class Setting
 
     public function setDescription(string $description): static
     {
-        $this->description = $description;
+        $this->description =  strip_tags($description);
 
         return $this;
     }
@@ -244,6 +250,30 @@ class Setting
     public function setInstagramLink(?string $instagramLink): static
     {
         $this->instagramLink = $instagramLink;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getCopyright(): ?string
+    {
+        return $this->copyright;
+    }
+
+    public function setCopyright(?string $copyright): static
+    {
+        $this->copyright = $copyright;
 
         return $this;
     }

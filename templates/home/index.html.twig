@@ -45,7 +45,7 @@
 								<div class="single_banner_info">
 									<h5 class="single_bn_title1">{{ collection.getTitle() }}</h5>
 									<h3 class="single_bn_title">{{ collection.getDescription() }}</h3>
-									<a class="single_bn_link" href="{{ collection.getButtonLink() }}">{{ collection.getButtonText() }}</a>
+									<a class="single_bn_link" target="_blank" href="{{ collection.getButtonLink() }}">{{ collection.getButtonText() }}</a>
 								</div>
 							</div>
 						</div>
@@ -68,7 +68,7 @@
 							<ul role="tablist" class="nav nav-tabs justify-content-center">
 								<li class="nav-item">
 									<a id="arrival-tab" data-bs-toggle="tab" href="#arrival" role="tab" aria-controls="arrival" aria-selected="true" class="nav-link active">New
-																																																																																																																																																																																				                                        Arrival</a>
+																																																																																																																																																																																																																																																																																																												                                        Arrival</a>
 								</li>
 								<li class="nav-item">
 									<a id="sellers-tab" data-bs-toggle="tab" href="#sellers" role="tab" aria-controls="sellers" aria-selected="false" class="nav-link">Best Sellers</a>
@@ -85,514 +85,520 @@
 						<div class="tab-content">
 							<div id="arrival" role="tabpanel" aria-labelledby="arrival-tab" class="tab-pane fade show active">
 								<div class="row shop_container">
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/970670668041335927385290724653240714148366921684565574162.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,bikini-unicolore-cte" href="/product/bikini-unicolore-ctel-shop">
-														Bikini unicolore
-																																																																																																																																																																																																																																																												                                                        côtelé</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$28.24</span>
-													<del>$241.5</del>
-													<div class="on_sale">
-														<span>35% Off</span>
+									{% for product in products %}
+										<div class="col-lg-3 col-md-4 col-6">
+											<div class="product">
+												<div class="product_img">
+													<a href="shop-product-detail.html"><img alt="{{ product.getName() }}" src="/assets/images/products/{{ product.getImageUrls()[0] }}"></a>
+													{# {% for imageUrl in product.getImageUrls() %}
+																																																																																												<img alt="{{ product.getName() }}" src="/assets/images/products/{{ imageUrl }}">
+																																																																																											{% endfor %} #}
+													<div class="product_action_box">
+														<ul class="list_none pr_action_btn">
+															<li class="add-to-cart">
+																<a href="#">
+																	<i class="icon-basket-loaded"></i>
+																	Add To Cart
+																</a>
+															</li>
+															<li>
+																<a href="shop-compare.html" class="popup-ajax">
+																	<i class="icon-shuffle"></i>
+																</a>
+															</li>
+															<li>
+																<a href="shop-quick-view.html" class="popup-ajax">
+																	<i class="icon-magnifier-add"></i>
+																</a>
+															</li>
+															<li>
+																<a href="#">
+																	<i class="icon-heart"></i>
+																</a>
+															</li>
+														</ul>
 													</div>
 												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
+												<div class="product_info">
+													<h6 class="product_title">
+														<a ng-reflect-router-link="/,product,bikini-unicolore-cte" href="/product/bikini-unicolore-ctel-shop">
+															{{ product.getName() }}
+														</a>
+													</h6>
+													<div class="product_price">
+														<span class="price">{{ product.getSoldePrice()/100 }}</span>
+														<del>{{ product.getRegularPrice()/100 }}</del>
+														<div class="on_sale">
+															<span>35% Off</span>
+														</div>
 													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
+													<div class="rating_wrap">
+														<div class="rating">
+															<div class="product_rate" style="width: 80%;"></div>
+														</div>
+														<span class="rating_num">(21)</span>
 													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_3/6138170893214881132536005127536132168491807951684087224669.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,culotte-blocs-de-cou" href="/product/culotte-blocs-de-couleurs-en-dentelle-jstore">
-														Culotte à blocs de couleurs en dentelle</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$54.95</span>
-													<del>$202.57</del>
-													<div class="on_sale">
-														<span>35% Off</span>
+													<div class="pr_desc">
+														<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																																																																																																                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																                                                        Nullam id varius nunc id varius nunc.</p>
 													</div>
-												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
-													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
+													<div class="pr_switch_wrap">
+														<div class="product_color_switch">
+															<span data-color="#87554B" class="active"></span>
+															<span data-color="#333333"></span>
+															<span data-color="#DA323F"></span>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_9/116945623386141314594418897879593148825527931684087225230.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,culotte-unicolore-sa" href="/product/culotte-unicolore-sans-couture-category">
-														Culotte
-																																																																																																																																																																																																																																																												                                                        unicolore (sans couture)</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$44.54</span>
-													<del>$201.32</del>
-													<div class="on_sale">
-														<span>35% Off</span>
-													</div>
-												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
-													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_7/825380258783085919054835307976332473139779511684087224936.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-mudey">
-														Culotte en
-																																																																																																																																																																																																																																																												                                                        dentelle</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$17.17</span>
-													<del>$277.59</del>
-													<div class="on_sale">
-														<span>35% Off</span>
-													</div>
-												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
-													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_5/36851533762117856286455670026456984987161761684087224828.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-espero">
-														Culotte en
-																																																																																																																																																																																																																																																												                                                        dentelle</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$23.91</span>
-													<del>$221.82</del>
-													<div class="on_sale">
-														<span>35% Off</span>
-													</div>
-												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
-													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_4/87087411019387380483560199609827534551691041684087224752.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,culotte-unicolore-fe" href="/product/culotte-unicolore-femme-sans-couture-akpoli">
-														Culotte unicolore femme (sans couture)</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$56.07</span>
-													<del>$223.66</del>
-													<div class="on_sale">
-														<span>35% Off</span>
-													</div>
-												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
-													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_2/64690629656996101166169787112869964617448491684087224479.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,tanga-unicolore" href="/product/tanga-unicolore">
-														Tanga unicolore</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$38.84</span>
-													<del>$292.94</del>
-													<div class="on_sale">
-														<span>35% Off</span>
-													</div>
-												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
-													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-4 col-6">
-										<div class="product">
-											<div class="product_img">
-												<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_8/10518988473111520886581236853833613928085898971684087225041.webp"></a>
-												<div class="product_action_box">
-													<ul class="list_none pr_action_btn">
-														<li class="add-to-cart">
-															<a href="#">
-																<i class="icon-basket-loaded"></i>
-																Add To Cart
-															</a>
-														</li>
-														<li>
-															<a href="shop-compare.html" class="popup-ajax">
-																<i class="icon-shuffle"></i>
-															</a>
-														</li>
-														<li>
-															<a href="shop-quick-view.html" class="popup-ajax">
-																<i class="icon-magnifier-add"></i>
-															</a>
-														</li>
-														<li>
-															<a href="#">
-																<i class="icon-heart"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-											<div class="product_info">
-												<h6 class="product_title">
-													<a ng-reflect-router-link="/,product,culotte-en-dentelle" href="/product/culotte-en-dentelle">
-														Culotte en dentelle</a>
-												</h6>
-												<div class="product_price">
-													<span class="price">$58.43</span>
-													<del>$291.58</del>
-													<div class="on_sale">
-														<span>35% Off</span>
-													</div>
-												</div>
-												<div class="rating_wrap">
-													<div class="rating">
-														<div class="product_rate" style="width: 80%;"></div>
-													</div>
-													<span class="rating_num">(21)</span>
-												</div>
-												<div class="pr_desc">
-													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
-												</div>
-												<div class="pr_switch_wrap">
-													<div class="product_color_switch">
-														<span data-color="#87554B" class="active"></span>
-														<span data-color="#333333"></span>
-														<span data-color="#DA323F"></span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
+									{% endfor %}
+
+									{# <div class="col-lg-3 col-md-4 col-6">
+																																																																																																																						<div class="product">
+																																																																																																																							<div class="product_img">
+																																																																																																																								<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_3/6138170893214881132536005127536132168491807951684087224669.webp"></a>
+																																																																																																																								<div class="product_action_box">
+																																																																																																																									<ul class="list_none pr_action_btn">
+																																																																																																																										<li class="add-to-cart">
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-basket-loaded"></i>
+																																																																																																																												Add To Cart
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-compare.html" class="popup-ajax">
+																																																																																																																												<i class="icon-shuffle"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-quick-view.html" class="popup-ajax">
+																																																																																																																												<i class="icon-magnifier-add"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-heart"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																									</ul>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																							<div class="product_info">
+																																																																																																																								<h6 class="product_title">
+																																																																																																																									<a ng-reflect-router-link="/,product,culotte-blocs-de-cou" href="/product/culotte-blocs-de-couleurs-en-dentelle-jstore">
+																																																																																																																										Culotte à blocs de couleurs en dentelle</a>
+																																																																																																																								</h6>
+																																																																																																																								<div class="product_price">
+																																																																																																																									<span class="price">$54.95</span>
+																																																																																																																									<del>$202.57</del>
+																																																																																																																									<div class="on_sale">
+																																																																																																																										<span>35% Off</span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																								<div class="rating_wrap">
+																																																																																																																									<div class="rating">
+																																																																																																																										<div class="product_rate" style="width: 80%;"></div>
+																																																																																																																									</div>
+																																																																																																																									<span class="rating_num">(21)</span>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_desc">
+																																																																																																																									<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																								                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																								                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_switch_wrap">
+																																																																																																																									<div class="product_color_switch">
+																																																																																																																										<span data-color="#87554B" class="active"></span>
+																																																																																																																										<span data-color="#333333"></span>
+																																																																																																																										<span data-color="#DA323F"></span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																						</div>
+																																																																																																																					</div>
+																																																																																																																					<div class="col-lg-3 col-md-4 col-6">
+																																																																																																																						<div class="product">
+																																																																																																																							<div class="product_img">
+																																																																																																																								<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_9/116945623386141314594418897879593148825527931684087225230.webp"></a>
+																																																																																																																								<div class="product_action_box">
+																																																																																																																									<ul class="list_none pr_action_btn">
+																																																																																																																										<li class="add-to-cart">
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-basket-loaded"></i>
+																																																																																																																												Add To Cart
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-compare.html" class="popup-ajax">
+																																																																																																																												<i class="icon-shuffle"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-quick-view.html" class="popup-ajax">
+																																																																																																																												<i class="icon-magnifier-add"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-heart"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																									</ul>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																							<div class="product_info">
+																																																																																																																								<h6 class="product_title">
+																																																																																																																									<a ng-reflect-router-link="/,product,culotte-unicolore-sa" href="/product/culotte-unicolore-sans-couture-category">
+																																																																																																																										Culotte
+																																																																																																																																																																																																																																																																																																																																																																								                                                        unicolore (sans couture)</a>
+																																																																																																																								</h6>
+																																																																																																																								<div class="product_price">
+																																																																																																																									<span class="price">$44.54</span>
+																																																																																																																									<del>$201.32</del>
+																																																																																																																									<div class="on_sale">
+																																																																																																																										<span>35% Off</span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																								<div class="rating_wrap">
+																																																																																																																									<div class="rating">
+																																																																																																																										<div class="product_rate" style="width: 80%;"></div>
+																																																																																																																									</div>
+																																																																																																																									<span class="rating_num">(21)</span>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_desc">
+																																																																																																																									<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																								                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																								                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_switch_wrap">
+																																																																																																																									<div class="product_color_switch">
+																																																																																																																										<span data-color="#87554B" class="active"></span>
+																																																																																																																										<span data-color="#333333"></span>
+																																																																																																																										<span data-color="#DA323F"></span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																						</div>
+																																																																																																																					</div>
+																																																																																																																					<div class="col-lg-3 col-md-4 col-6">
+																																																																																																																						<div class="product">
+																																																																																																																							<div class="product_img">
+																																																																																																																								<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_7/825380258783085919054835307976332473139779511684087224936.webp"></a>
+																																																																																																																								<div class="product_action_box">
+																																																																																																																									<ul class="list_none pr_action_btn">
+																																																																																																																										<li class="add-to-cart">
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-basket-loaded"></i>
+																																																																																																																												Add To Cart
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-compare.html" class="popup-ajax">
+																																																																																																																												<i class="icon-shuffle"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-quick-view.html" class="popup-ajax">
+																																																																																																																												<i class="icon-magnifier-add"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-heart"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																									</ul>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																							<div class="product_info">
+																																																																																																																								<h6 class="product_title">
+																																																																																																																									<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-mudey">
+																																																																																																																										Culotte en
+																																																																																																																																																																																																																																																																																																																																																																								                                                        dentelle</a>
+																																																																																																																								</h6>
+																																																																																																																								<div class="product_price">
+																																																																																																																									<span class="price">$17.17</span>
+																																																																																																																									<del>$277.59</del>
+																																																																																																																									<div class="on_sale">
+																																																																																																																										<span>35% Off</span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																								<div class="rating_wrap">
+																																																																																																																									<div class="rating">
+																																																																																																																										<div class="product_rate" style="width: 80%;"></div>
+																																																																																																																									</div>
+																																																																																																																									<span class="rating_num">(21)</span>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_desc">
+																																																																																																																									<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																								                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																								                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_switch_wrap">
+																																																																																																																									<div class="product_color_switch">
+																																																																																																																										<span data-color="#87554B" class="active"></span>
+																																																																																																																										<span data-color="#333333"></span>
+																																																																																																																										<span data-color="#DA323F"></span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																						</div>
+																																																																																																																					</div>
+																																																																																																																					<div class="col-lg-3 col-md-4 col-6">
+																																																																																																																						<div class="product">
+																																																																																																																							<div class="product_img">
+																																																																																																																								<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_5/36851533762117856286455670026456984987161761684087224828.webp"></a>
+																																																																																																																								<div class="product_action_box">
+																																																																																																																									<ul class="list_none pr_action_btn">
+																																																																																																																										<li class="add-to-cart">
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-basket-loaded"></i>
+																																																																																																																												Add To Cart
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-compare.html" class="popup-ajax">
+																																																																																																																												<i class="icon-shuffle"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-quick-view.html" class="popup-ajax">
+																																																																																																																												<i class="icon-magnifier-add"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-heart"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																									</ul>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																							<div class="product_info">
+																																																																																																																								<h6 class="product_title">
+																																																																																																																									<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-espero">
+																																																																																																																										Culotte en
+																																																																																																																																																																																																																																																																																																																																																																								                                                        dentelle</a>
+																																																																																																																								</h6>
+																																																																																																																								<div class="product_price">
+																																																																																																																									<span class="price">$23.91</span>
+																																																																																																																									<del>$221.82</del>
+																																																																																																																									<div class="on_sale">
+																																																																																																																										<span>35% Off</span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																								<div class="rating_wrap">
+																																																																																																																									<div class="rating">
+																																																																																																																										<div class="product_rate" style="width: 80%;"></div>
+																																																																																																																									</div>
+																																																																																																																									<span class="rating_num">(21)</span>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_desc">
+																																																																																																																									<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																								                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																								                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_switch_wrap">
+																																																																																																																									<div class="product_color_switch">
+																																																																																																																										<span data-color="#87554B" class="active"></span>
+																																																																																																																										<span data-color="#333333"></span>
+																																																																																																																										<span data-color="#DA323F"></span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																						</div>
+																																																																																																																					</div>
+																																																																																																																					<div class="col-lg-3 col-md-4 col-6">
+																																																																																																																						<div class="product">
+																																																																																																																							<div class="product_img">
+																																																																																																																								<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_4/87087411019387380483560199609827534551691041684087224752.webp"></a>
+																																																																																																																								<div class="product_action_box">
+																																																																																																																									<ul class="list_none pr_action_btn">
+																																																																																																																										<li class="add-to-cart">
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-basket-loaded"></i>
+																																																																																																																												Add To Cart
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-compare.html" class="popup-ajax">
+																																																																																																																												<i class="icon-shuffle"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-quick-view.html" class="popup-ajax">
+																																																																																																																												<i class="icon-magnifier-add"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-heart"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																									</ul>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																							<div class="product_info">
+																																																																																																																								<h6 class="product_title">
+																																																																																																																									<a ng-reflect-router-link="/,product,culotte-unicolore-fe" href="/product/culotte-unicolore-femme-sans-couture-akpoli">
+																																																																																																																										Culotte unicolore femme (sans couture)</a>
+																																																																																																																								</h6>
+																																																																																																																								<div class="product_price">
+																																																																																																																									<span class="price">$56.07</span>
+																																																																																																																									<del>$223.66</del>
+																																																																																																																									<div class="on_sale">
+																																																																																																																										<span>35% Off</span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																								<div class="rating_wrap">
+																																																																																																																									<div class="rating">
+																																																																																																																										<div class="product_rate" style="width: 80%;"></div>
+																																																																																																																									</div>
+																																																																																																																									<span class="rating_num">(21)</span>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_desc">
+																																																																																																																									<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																								                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																								                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_switch_wrap">
+																																																																																																																									<div class="product_color_switch">
+																																																																																																																										<span data-color="#87554B" class="active"></span>
+																																																																																																																										<span data-color="#333333"></span>
+																																																																																																																										<span data-color="#DA323F"></span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																						</div>
+																																																																																																																					</div>
+																																																																																																																					<div class="col-lg-3 col-md-4 col-6">
+																																																																																																																						<div class="product">
+																																																																																																																							<div class="product_img">
+																																																																																																																								<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_2/64690629656996101166169787112869964617448491684087224479.webp"></a>
+																																																																																																																								<div class="product_action_box">
+																																																																																																																									<ul class="list_none pr_action_btn">
+																																																																																																																										<li class="add-to-cart">
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-basket-loaded"></i>
+																																																																																																																												Add To Cart
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-compare.html" class="popup-ajax">
+																																																																																																																												<i class="icon-shuffle"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-quick-view.html" class="popup-ajax">
+																																																																																																																												<i class="icon-magnifier-add"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-heart"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																									</ul>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																							<div class="product_info">
+																																																																																																																								<h6 class="product_title">
+																																																																																																																									<a ng-reflect-router-link="/,product,tanga-unicolore" href="/product/tanga-unicolore">
+																																																																																																																										Tanga unicolore</a>
+																																																																																																																								</h6>
+																																																																																																																								<div class="product_price">
+																																																																																																																									<span class="price">$38.84</span>
+																																																																																																																									<del>$292.94</del>
+																																																																																																																									<div class="on_sale">
+																																																																																																																										<span>35% Off</span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																								<div class="rating_wrap">
+																																																																																																																									<div class="rating">
+																																																																																																																										<div class="product_rate" style="width: 80%;"></div>
+																																																																																																																									</div>
+																																																																																																																									<span class="rating_num">(21)</span>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_desc">
+																																																																																																																									<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																								                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																								                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_switch_wrap">
+																																																																																																																									<div class="product_color_switch">
+																																																																																																																										<span data-color="#87554B" class="active"></span>
+																																																																																																																										<span data-color="#333333"></span>
+																																																																																																																										<span data-color="#DA323F"></span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																						</div>
+																																																																																																																					</div>
+																																																																																																																					<div class="col-lg-3 col-md-4 col-6">
+																																																																																																																						<div class="product">
+																																																																																																																							<div class="product_img">
+																																																																																																																								<a href="shop-product-detail.html"><img alt="product_img1" src="/assets/files/culottes/culotte_8/10518988473111520886581236853833613928085898971684087225041.webp"></a>
+																																																																																																																								<div class="product_action_box">
+																																																																																																																									<ul class="list_none pr_action_btn">
+																																																																																																																										<li class="add-to-cart">
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-basket-loaded"></i>
+																																																																																																																												Add To Cart
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-compare.html" class="popup-ajax">
+																																																																																																																												<i class="icon-shuffle"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="shop-quick-view.html" class="popup-ajax">
+																																																																																																																												<i class="icon-magnifier-add"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																										<li>
+																																																																																																																											<a href="#">
+																																																																																																																												<i class="icon-heart"></i>
+																																																																																																																											</a>
+																																																																																																																										</li>
+																																																																																																																									</ul>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																							<div class="product_info">
+																																																																																																																								<h6 class="product_title">
+																																																																																																																									<a ng-reflect-router-link="/,product,culotte-en-dentelle" href="/product/culotte-en-dentelle">
+																																																																																																																										Culotte en dentelle</a>
+																																																																																																																								</h6>
+																																																																																																																								<div class="product_price">
+																																																																																																																									<span class="price">$58.43</span>
+																																																																																																																									<del>$291.58</del>
+																																																																																																																									<div class="on_sale">
+																																																																																																																										<span>35% Off</span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																								<div class="rating_wrap">
+																																																																																																																									<div class="rating">
+																																																																																																																										<div class="product_rate" style="width: 80%;"></div>
+																																																																																																																									</div>
+																																																																																																																									<span class="rating_num">(21)</span>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_desc">
+																																																																																																																									<p>Lorem ipsum dolor sit amet,
+																																																																																																																																																																																																																																																																																																																																																																								                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																								                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																								</div>
+																																																																																																																								<div class="pr_switch_wrap">
+																																																																																																																									<div class="product_color_switch">
+																																																																																																																										<span data-color="#87554B" class="active"></span>
+																																																																																																																										<span data-color="#333333"></span>
+																																																																																																																										<span data-color="#DA323F"></span>
+																																																																																																																									</div>
+																																																																																																																								</div>
+																																																																																																																							</div>
+																																																																																																																						</div>
+																																																																																																																					</div> #}
 								</div>
 							</div>
 							<div id="sellers" role="tabpanel" aria-labelledby="sellers-tab" class="tab-pane fade">
@@ -647,8 +653,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -710,8 +716,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -773,8 +779,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -836,8 +842,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -899,8 +905,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -962,8 +968,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1025,8 +1031,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1088,8 +1094,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1139,7 +1145,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,culotte-en-dentelle-" href="/product/culotte-en-dentelle-losange-tulle">
 														Culotte en
-																																																																																																																																																																																																																																																												                                                        dentelle losange à tulle</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        dentelle losange à tulle</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$17.92</span>
@@ -1156,8 +1162,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1219,8 +1225,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1282,8 +1288,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1345,8 +1351,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1392,7 +1398,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,jupe-fendue-taille-h" href="/product/jupe-fendue-taille-haute">
 														Jupe fendue taille
-																																																																																																																																																																																																																																																												                                                        haute</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        haute</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$55.54</span>
@@ -1409,8 +1415,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1456,7 +1462,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,jupe-moulante-unicol" href="/product/jupe-moulante-unicolore">
 														Jupe moulante
-																																																																																																																																																																																																																																																												                                                        unicolore</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        unicolore</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$60.75</span>
@@ -1473,8 +1479,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1536,8 +1542,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1583,7 +1589,7 @@
 												<h6 class="product_title">
 													<a ng-reflect-router-link="/,product,jupe-droite-en-vichy" href="/product/jupe-droite-en-vichy-zipp">
 														Jupe droite en vichy
-																																																																																																																																																																																																																																																												                                                        zippé</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        zippé</a>
 												</h6>
 												<div class="product_price">
 													<span class="price">$25.78</span>
@@ -1600,8 +1606,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1667,8 +1673,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1730,8 +1736,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1793,8 +1799,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1856,8 +1862,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1919,8 +1925,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -1982,8 +1988,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -2045,8 +2051,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">
@@ -2108,8 +2114,8 @@
 												</div>
 												<div class="pr_desc">
 													<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																												                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																												                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																				                                                        Nullam id varius nunc id varius nunc.</p>
 												</div>
 												<div class="pr_switch_wrap">
 													<div class="product_color_switch">

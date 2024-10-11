@@ -2,21 +2,22 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Collections;
+use App\Entity\Page;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-class CollectionsCrudController extends AbstractCrudController
+class PageCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Collections::class;
+        return Page::class;
     }
 
     public function configureActions(Actions $actions): Actions
@@ -33,14 +34,10 @@ class CollectionsCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title'),
-            TextField::new('description'),
-            TextField::new('button_text'),
-            TextField::new('button_link'),
-            ImageField::new('imageUrl')
-                ->setBasePath("assets/images/collections")
-                ->setUploadDir("/public/assets/images/collections")
-                ->setUploadedFileNamePattern('[randomhash].[extension]')
-                ->setRequired($pageName === Crud::PAGE_NEW),
+            SlugField::new('slug')->setTargetFieldName('title')->hideOnIndex(),
+            TextEditorField::new('content'),
+            BooleanField::new('isHead'),
+            BooleanField::new('isFoot'),
         ];
     }
 }
