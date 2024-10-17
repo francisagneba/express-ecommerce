@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Cocur\Slugify\Slugify;
+use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -71,10 +71,14 @@ class Product
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    private Collection $relatedProducts;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->setCreatedAt(new \DateTimeImmutable());
+        $this->relatedProducts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,9 +94,6 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-        // $slugify = new Slugify();
-        // $slugify->slugify($name);
-
         $this->setSlug((new Slugify())->slugify($name));
 
         return $this;
@@ -117,7 +118,7 @@ class Product
 
     public function setDescription(string $description): static
     {
-        $this->description =  strip_tags($description);
+        $this->description = $description;
 
         return $this;
     }
@@ -129,7 +130,7 @@ class Product
 
     public function setMoreDescription(?string $more_description): static
     {
-        $this->more_description =  strip_tags($more_description);
+        $this->more_description = $more_description;
 
         return $this;
     }
@@ -141,7 +142,7 @@ class Product
 
     public function setAdditionalInfos(?string $additional_infos): static
     {
-        $this->additional_infos =  strip_tags($additional_infos);
+        $this->additional_infos = $additional_infos;
 
         return $this;
     }
@@ -289,7 +290,6 @@ class Product
 
         return $this;
     }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->created_at;
@@ -310,6 +310,34 @@ class Product
     public function setUpdatedAt(?\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getRelatedProducts(): Collection
+    {
+        return $this->relatedProducts;
+    }
+
+    public function addRelatedProduct(self $relatedProduct): static
+    {
+        if (!$this->relatedProducts->contains($relatedProduct)) {
+            $this->relatedProducts->add($relatedProduct);
+        }
+
+        return $this;
+    }
+
+    public function removeRelatedProduct(self $relatedProduct): static
+    {
+        $this->relatedProducts->removeElement($relatedProduct);
 
         return $this;
     }

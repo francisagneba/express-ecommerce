@@ -1,8 +1,7 @@
 <div class="col-lg-3 col-md-4 col-6">
 	<div class="product">
 		<div class="product_img">
-			<a href="shop-product-detail.html"><img alt="{{ product.name}}" src="/assets/images/products/{{ product.imageUrls[1] }}"></a>
-
+			<a href="/product/{{ product.slug }}"><img alt="{{ product.name}}" src="/assets/images/products/{{ product.imageUrls[0] }}"></a>
 			<div class="product_action_box">
 				<ul class="list_none pr_action_btn">
 					<li class="add-to-cart">
@@ -31,7 +30,7 @@
 		</div>
 		<div class="product_info">
 			<h6 class="product_title">
-				<a href="/product/bikini-unicolore-ctel-shop">
+				<a href="/product/{{ product.slug }}">
 					{{ product.name}}
 				</a>
 			</h6>
@@ -50,8 +49,8 @@
 			</div>
 			<div class="pr_desc">
 				<p>Lorem ipsum dolor sit amet,
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                                                        Nullam id varius nunc id varius nunc.</p>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                                                        consectetur adipiscing elit. Phasellus blandit massa enim.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                                                        Nullam id varius nunc id varius nunc.</p>
 			</div>
 			<div class="pr_switch_wrap">
 				<div class="product_color_switch">

@@ -70,4 +70,30 @@ class HomeController extends AbstractController
 
         ]);
     }
+
+    #[Route('/product/{slug}', name: 'app_product_by_slug')]
+    public function showProduct(string $slug)
+    {
+        $product = $this->repoProduct->findOneBy(['slug' => $slug]);
+
+        if (!$product) {
+            //error
+            return $this->redirectToRoute('app_error');
+        }
+
+        return $this->render('product/show_product_by_slug.html.twig', [
+
+            'product' => $product,
+        ]);
+    }
+
+    #[Route('/error}', name: 'app_error')]
+    public function errorPage()
+    {
+
+        //Redirect to error page
+        return $this->render('page/not-found.html.twig', [
+            'controller_name' => 'PageController',
+        ]);
+    }
 }
