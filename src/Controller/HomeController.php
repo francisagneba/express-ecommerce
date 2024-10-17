@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\CategoryRepository;
 use App\Repository\CollectionsRepository;
 use App\Repository\PageRepository;
 use App\Repository\ProductRepository;
@@ -28,13 +29,16 @@ class HomeController extends AbstractController
         SettingRepository $settingRepo,
         SlidersRepository $slidersRepo,
         CollectionsRepository $collectionsRepo,
+        CategoryRepository $categoryRepo,
         PageRepository $pageRepo,
         Request $request
     ): Response {
         $session = $request->getSession();
         $data = $settingRepo->findAll();
         $sliders = $slidersRepo->findAll();
-        $collections = $collectionsRepo->findAll();
+        $collections = $collectionsRepo->findBy(['isMega' => false]);
+        $megacollections = $collectionsRepo->findBy(['isMega' => true]);
+        $categories = $categoryRepo->findBy(['isMega' => true]);
 
         //dd($data);
         $session->set("setting", $data[0]);
@@ -48,8 +52,12 @@ class HomeController extends AbstractController
         $productsFeatured = $this->repoProduct->findBy(['isFeatured' => true]);
         $productsSpecialOffer = $this->repoProduct->findBy(['isSpecialOffer' => true]);
 
+        // ici on met ça dans la session
+
         $session->set("headerpages", $headerPages);
         $session->set("footerPages", $footerPages);
+        $session->set("categories", $categories);
+        $session->set("megaCollections", $megacollections);
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
