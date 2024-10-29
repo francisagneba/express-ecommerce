@@ -18,6 +18,14 @@ h1,h2,h3,h4,h5,h6 {
 	color: #292b2c;
 	font-family: 'Roboto';
 }
+img[id^="product"]{
+	aspect-ratio: 1 / 1;
+}
+.notification{
+	position: fixed;
+	right: 20px;
+	bottom: 10px;
+}
 p {
 	color:#687188;
 	line-height: 28px;
@@ -1089,7 +1097,7 @@ button:focus:not(:focus-visible) {
 .dark_skin .cart_total {
 	color: #333333;
 	overflow: hidden;
-	text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 .dropdown-toggle::after, .dropdown-toggler::after {
 	border: 0 none;

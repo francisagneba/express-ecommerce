@@ -7,10 +7,8 @@ use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-
 class CartServices
 {
-
     private $session;
     private $repoProduct;
     private $tva = 0.2;
@@ -21,12 +19,17 @@ class CartServices
         $this->repoProduct = $repoProduct;
     }
 
-    public function addToCart($id, $count = 1)
+    public function addToCart(int $id, int $count = 1): void
     {
+        $product = $this->repoProduct->find($id);
+        if (!$product) {
+            throw new \Exception("Product not found.");
+        }
+
         $cart = $this->getCart(); // Récupérer le panier
 
         // Si le produit existe déjà dans le panier, on incrémente la quantité
-        if (!empty($cart[$id])) {
+        if (isset($cart[$id])) {
             $cart[$id] += $count; // Incrémenter la quantité
         } else {
             // Sinon, on l'ajoute avec la quantité fournie
@@ -36,75 +39,50 @@ class CartServices
         $this->updateCart($cart); // Mettre à jour le panier
     }
 
-
-    // public function addToCart($productId, $count = 1)
-    // {
-    //     // [
-    //     //     '1' => 3,
-    //     //     '25' => 1,
-    //     // ]
-    //     $cart = $this->getCart();
-
-    //     if(!empty($cart[$productId])){
-    //         // product exist in cart
-    //         $cart[$productId] += $count;
-    //     }else{
-    //         // product not exist
-    //         $cart[$productId] = $count;
-    //     }
-
-    //     $this->updateCart($cart);
-    // }
-
-    public function deleteFromCart($id)
+    public function deleteFromCart(int $id): void
     {
-        $cart = $this->getCart(); // On recupére le panier
+        $cart = $this->getCart(); // On récupère le panier
 
-        if (isset($cart[$id])) {  //si c'est définit, c'est que le produit existe déjà dans le panier
-
-            if ($cart[$id] > 1) { // Nous allons poser la condition pour savoir si le produit existe plus d'une fois ds le panier
+        if (isset($cart[$id])) {  // Si c'est défini, c'est que le produit existe déjà dans le panier
+            if ($cart[$id] > 1) { // Vérifie si le produit existe plus d'une fois
                 $cart[$id]--;
             } else {
-                unset($cart[$id]); // Si on a un seul produit , on le retire purement et sinplement
+                unset($cart[$id]); // Si on a un seul produit, on le retire
             }
-            $this->updateCart($cart); //on procèce à la mise à jour du panier, donc mise à jour de la session
+            $this->updateCart($cart); // Mise à jour du panier
         }
     }
 
-    public function deleteAllToCart($id)
-    {  // Ici on supprime tout les produits du panier
-        $cart = $this->getCart(); // On recupére le panier
-
-        if (isset($cart[$id])) {  //si c'est définit, c'est que le produit existe déjà dans le panier
-
-            unset($cart[$id]); // On supprime ici tous les produits du panier
-
-            $this->updateCart($cart); //on procèce à la mise à jour du panier, donc mise à jour de la session
-        }
-    }
-
-    public function deleteCart()
+    public function deleteAllToCart(int $id): void
     {
-        $this->updateCart([]); // Ici il nous vide vraiment le panier
+        $cart = $this->getCart(); // On récupère le panier
 
+        if (isset($cart[$id])) {  // Si c'est défini, c'est que le produit existe déjà dans le panier
+            unset($cart[$id]); // On supprime tous les produits du panier
+            $this->updateCart($cart); // Mise à jour du panier
+        }
     }
 
-    public function updateCart($cart)
+    public function deleteCart(): void
+    {
+        $this->updateCart([]); // Vide le panier
+    }
+
+    public function updateCart(array $cart): void
     {
         $this->session->set('cart', $cart);
-        $this->session->set('cartData', $this->getFullCart()); //variable de session contenant les données du produit
+        $this->session->set('cartData', $this->getFullCart()); // Données du produit dans la session
     }
 
-    public function getCart()
+    public function getCart(): array
     {
         return $this->session->get('cart', []);
     }
 
-    // Pour finir on va creer une methode pour recupere tous les produis du panier
-    public function getFullCart()
+    public function getFullCart(): array
     {
         $cart = $this->getCart();
-        $fullCart = [];
+        $fullCart = ['items' => []]; // Assurez-vous que 'items' est initialisé
         $quantity_cart = 0;
         $subTotal = 0;
 
@@ -112,20 +90,23 @@ class CartServices
             $product = $this->repoProduct->find($id);
 
             if ($product) {
-                $fullCart['products'][] = [
+                $subTotalPrice = $quantity * $product->getRegularPrice(); // Calcul du sous-total
+                $fullCart['items'][] = [
                     "quantity" => $quantity,
+                    "sub_total" => $subTotalPrice, // Ajoutez le sous-total ici
                     "product" => [
                         'id' => $product->getId(),
                         'name' => $product->getName(),
+                        'slug' => $product->getSlug(),
                         'imageUrls' => $product->getImageUrls(),
                         'soldePrice' => $product->getSoldePrice(),
                         'regularPrice' => $product->getRegularPrice(),
                     ],
                 ];
                 $quantity_cart += $quantity;
-                $subTotal += $quantity * $product->getRegularPrice() / 100;
+                $subTotal += $subTotalPrice; // Mettez à jour le sous-total
             } else {
-                $this->deleteFromCart($id); // Supprimer le produit s'il n'existe pas
+                $this->deleteFromCart($id); // Supprime le produit s'il n'existe pas
             }
         }
 
@@ -136,6 +117,12 @@ class CartServices
             "taxe" => round($subTotal * $this->tva, 2),
             "subTotalTTC" => round(($subTotal + ($subTotal * $this->tva)), 2)
         ];
+
         return $fullCart;
+    }
+
+    public function getTax(): float
+    {
+        return $this->tva; // Ajoutez cette méthode pour obtenir la taxe si nécessaire
     }
 }

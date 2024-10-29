@@ -42,7 +42,9 @@
 						<ul class="contact_detail text-center text-lg-start">
 							<li>
 								<i class="ti-mobile"></i>
-								<span>+{{ app.session.get("setting").phone }}</span>
+								<span>
+									{{ app.session.get("setting").phone }}
+								</span>
 							</li>
 						</ul>
 					</div>
@@ -62,6 +64,7 @@
 									<span>Wishlist</span>
 								</a>
 							</li>
+
 							{% if app.user %}
 								<li>
 									<a href="/account">
@@ -88,6 +91,7 @@
 										<span>Signup</span>
 									</a>
 								</li>
+
 							{% endif %}
 							<li></li>
 							<li></li>
@@ -117,17 +121,29 @@
 							<a href="#" data-bs-toggle="dropdown" class="dropdown-toggle nav-link active" aria-expanded="false">Pages</a>
 							<div class="dropdown-menu">
 								<ul>
-									{% for page in app.session.get("headerpages") %}
+									{% for page in app.session.get("headerPages") %}
 										<li>
-											<a class="dropdown-item nav-link nav_item" href="/page/{{page.slug}}">{{ page.title }}</a>
+											<a class="dropdown-item nav-link nav_item" href="/page/{{page.slug}}">
+												{{page.title}}
+											</a>
 										</li>
 									{% endfor %}
-
-									{# <li><a routerlink="/contact" class="dropdown-item nav-link nav_item" ng-reflect-router-link="/contact" href="/contact">Contact Us</a></li>
-																																																																																																																																																																																																																																																																																																																																																						<li><a routerlink="/fqa" class="dropdown-item nav-link nav_item" ng-reflect-router-link="/fqa" href="/fqa">Faq</a></li>
-																																																																																																																																																																																																																																																																																																																																																						<li><a routerlink="/login" class="dropdown-item nav-link nav_item" ng-reflect-router-link="/login" href="/login">Login</a></li>
-																																																																																																																																																																																																																																																																																																																																																						<li><a routerlink="/register" class="dropdown-item nav-link nav_item" ng-reflect-router-link="/register" href="/register">Register</a></li>
-																																																																																																																																																																																																																																																																																																																																																						<li><a routerlink="/terms" class="dropdown-item nav-link nav_item" ng-reflect-router-link="/terms" href="/terms">Terms and Conditions</a></li> #}
+									<!-- <li >
+																											                                        <a 
+																											                                            routerlink="/contact" class="dropdown-item nav-link nav_item"
+																											                                            ng-reflect-router-link="/contact" href="/contact">Contact Us</a></li>
+																											                                    <li ><a  routerlink="/fqa"
+																											                                            class="dropdown-item nav-link nav_item" ng-reflect-router-link="/fqa"
+																											                                            href="/fqa">Faq</a></li>
+																											                                    <li ><a 
+																											                                            routerlink="/login" class="dropdown-item nav-link nav_item"
+																											                                            ng-reflect-router-link="/login" href="/login">Login</a></li>
+																											                                    <li ><a 
+																											                                            routerlink="/register" class="dropdown-item nav-link nav_item"
+																											                                            ng-reflect-router-link="/register" href="/register">Register</a></li>
+																											                                    <li ><a  routerlink="/terms"
+																											                                            class="dropdown-item nav-link nav_item" ng-reflect-router-link="/terms"
+																											                                            href="/terms">Terms and Conditions</a></li> -->
 								</ul>
 							</div>
 						</li>
@@ -138,33 +154,62 @@
 									{% for category in app.session.get('categories') %}
 										<li class="mega-menu-col col-lg-3">
 											<ul>
-												<li class="dropdown-header">{{ category.name }}</li>
+												<li class="dropdown-header">{{category.name }}</li>
 												{% for product in category.products %}
-													{% if loop.index < 5 %}
+													{% if loop.index < 4 %}
 														<li>
-															<a class="dropdown-item nav-link nav_item" href="/product/{{ product.slug}}">
-																<img src="/assets/images/products/{{ product.imageUrls[0]}}" width="30" height="40" alt="{{ product.name }}">
+															<a class="dropdown-item nav-link nav_item" href="/product/{{product.slug}}">
+																<img src="/assets/images/products/{{product.imageUrls[0]}}" width="30" height="30" alt="">
 																{{ product.name }}
 															</a>
+
 														</li>
+
 													{% endif %}
 												{% endfor %}
 											</ul>
 										</li>
 									{% endfor %}
+
 								</ul>
 								<div class="d-lg-flex menu_banners row g-3 px-3">
 									{% for collection in app.session.get('megaCollections') %}
 										<div class="col-sm-4">
-											<div class="header-banner"><img alt="menu_banner1" src="/assets/images/collections/{{ collection.imageUrl() }}">
+											<div class="header-banner"><img alt="menu_banner1" src="/assets/images/collections/{{ collection.imageUrl }}">
 												<div class="banne_info">
-													<h6>{{ collection.description() }}</h6>
-													<h4>{{ collection.title() }}</h4>
-													<a target="_blank" href="{{ collection.buttonLink() }}">{{ collection.buttonText() }}</a>
+													<h6>{{ collection.description}}</h6>
+													<h4>{{ collection.title }}</h4>
+													<a href="{{collection.buttonLink}}">
+														{{collection.buttonText}}
+													</a>
 												</div>
 											</div>
 										</div>
 									{% endfor %}
+									<!-- <div  class="col-sm-4">
+																											                                        <div  class="header-banner"><img
+																											                                                 alt="menu_banner1"
+																											                                                src="/assets/files/megaCollection/8932488097310286313588503554459963159142614451684826970123.png">
+																											                                            <div  class="banne_info">
+																											                                                <h6 >15% Off</h6>
+																											                                                <h4 >Men's Fashion</h4><a
+																											                                                     href="http://localhost:4300/">Shop
+																											                                                    Now</a>
+																											                                            </div>
+																											                                        </div>
+																											                                    </div>
+																											                                    <div  class="col-sm-4">
+																											                                        <div  class="header-banner"><img
+																											                                                 alt="menu_banner1"
+																											                                                src="/assets/files/megaCollection/1412527185807988177642011518607795945067036381684827015102.png">
+																											                                            <div  class="banne_info">
+																											                                                <h6 >23% Off</h6>
+																											                                                <h4 >Kids Fashion</h4><a
+																											                                                     href="http://localhost:4300/">Shop
+																											                                                    Now</a>
+																											                                            </div>
+																											                                        </div>
+																											                                    </div> -->
 								</div>
 							</div>
 						</li>
@@ -173,7 +218,7 @@
 						</li>
 						<li>
 							<a routerlink="/contact" class="nav-link nav_item" ng-reflect-router-link="/contact" href="/contact">Contact
-																																																																																																																																																																																																																																																																																																																																																																																																																                                Us</a>
+																								                        Us</a>
 						</li>
 					</ul>
 				</div>
@@ -221,122 +266,17 @@
 					<li class="dropdown cart_dropdown">
 						<a href="#" data-bs-toggle="dropdown" class="nav-link cart_trigger">
 							<i class="linearicons-cart"></i>
-							<span class="cart_count">31</span>
+							<span class="cart_count"></span>
 						</a>
 						<div class="cart_box dropdown-menu dropdown-menu-right">
-							<ul class="cart_list">
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/culottes/culotte_5/36851533762117856286455670026456984987161761684087224828.webp">Culotte
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        en dentelle</a>
-									<span class="cart_quantity">
-										11 x
-										<span class="cart_amount">
-											<span class="price_symbole">23,91&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/culottes/culotte_9/116945623386141314594418897879593148825527931684087225230.webp">Culotte
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        unicolore (sans couture)</a>
-									<span class="cart_quantity">
-										4 x
-										<span class="cart_amount">
-											<span class="price_symbole">44,54&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/culottes/culotte_7/825380258783085919054835307976332473139779511684087224936.webp">Culotte
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        en dentelle</a>
-									<span class="cart_quantity">
-										3 x
-										<span class="cart_amount">
-											<span class="price_symbole">17,17&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/970670668041335927385290724653240714148366921684565574162.webp">Bikini
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        unicolore côtelé</a>
-									<span class="cart_quantity">
-										4
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        x
-										<span class="cart_amount">
-											<span class="price_symbole">28,24&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/culottes/culotte_4/87087411019387380483560199609827534551691041684087224752.webp">Culotte
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        unicolore femme (sans couture)</a>
-									<span class="cart_quantity">
-										2 x
-										<span class="cart_amount">
-											<span class="price_symbole">56,07&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/culottes/culotte_2/64690629656996101166169787112869964617448491684087224479.webp">Tanga
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        unicolore</a>
-									<span class="cart_quantity">
-										3 x
-										<span class="cart_amount">
-											<span class="price_symbole">38,84&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/culottes/culotte_8/10518988473111520886581236853833613928085898971684087225041.webp">Culotte
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        en dentelle</a>
-									<span class="cart_quantity">
-										1 x
-										<span class="cart_amount">
-											<span class="price_symbole">58,43&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-								<li>
-									<a href="#" class="item_remove">
-										<i class="ion-close"></i>
-									</a>
-									<a href="#"><img width="50" height="50" alt="cart_thumb1" src="/assets/files/culottes/culotte_3/6138170893214881132536005127536132168491807951684087224669.webp">Culotte
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                        à blocs de couleurs en dentelle</a>
-									<span class="cart_quantity">
-										3 x
-										<span class="cart_amount">
-											<span class="price_symbole">54,95&nbsp;€</span>
-										</span>
-									</span>
-								</li>
-							</ul>
+							<ul class="cart_list"></ul>
 							<div class="cart_footer">
 								<p class="cart_total">
 									<strong>Subtotal:</strong>
 									<span class="cart_price">
 										<span class="price_symbole"></span>
-									</span>1 057,58&nbsp;€
+									</span>
+									<span class="cart_price_value"></span>
 								</p>
 								<p class="cart_buttons">
 									<a routerlink="/cart" class="btn btn-fill-line view-cart" ng-reflect-router-link="/cart" href="/cart">View Cart</a>
