@@ -63,11 +63,6 @@ class CartServices
         }
     }
 
-    public function deleteCart(): void
-    {
-        $this->updateCart([]); // Vide le panier
-    }
-
     public function updateCart(array $cart): void
     {
         $this->session->set('cart', $cart);
@@ -104,25 +99,16 @@ class CartServices
                     ],
                 ];
                 $quantity_cart += $quantity;
-                $subTotal += $subTotalPrice; // Mettez à jour le sous-total
-            } else {
-                $this->deleteFromCart($id); // Supprime le produit s'il n'existe pas
+                $subTotal += $subTotalPrice; // Additionner les sous-totaux
             }
         }
 
-        // Ajout des totaux dans le panier
         $fullCart['data'] = [
-            "quantity_cart" => $quantity_cart,
-            "subTotalHT" => $subTotal,
-            "taxe" => round($subTotal * $this->tva, 2),
-            "subTotalTTC" => round(($subTotal + ($subTotal * $this->tva)), 2)
+            'subTotalHT' => $subTotal,
+            'subTotalTTC' => $subTotal + ($subTotal * $this->tva),
+            'quantity' => $quantity_cart
         ];
 
         return $fullCart;
-    }
-
-    public function getTax(): float
-    {
-        return $this->tva; // Ajoutez cette méthode pour obtenir la taxe si nécessaire
     }
 }

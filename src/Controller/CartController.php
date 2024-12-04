@@ -20,14 +20,15 @@ class CartController extends AbstractController
     #[Route('/cart', name: 'app_cart')]
     public function index(): Response
     {
+        // Récupère le panier complet
         $cart = $this->cartServices->getFullCart();
 
-        // Assurez-vous que le panier n'est pas vide avant d'essayer de l'afficher
-        if (!isset($cart['items']) || empty($cart['items'])) {
+        // Si le panier est vide, redirige vers la page d'accueil
+        if (empty($cart['items'])) {
             return $this->redirectToRoute('app_home');
         }
 
-        // Encodage JSON du panier pour utilisation côté client
+        // Convertir les données du panier en JSON pour les utiliser côté client
         $cart_json = json_encode($cart);
 
         return $this->render('cart/index.html.twig', [
@@ -40,95 +41,102 @@ class CartController extends AbstractController
     public function addToCart(int $id, int $count = 1, Request $request): Response
     {
         try {
+            // Vérification des paramètres d'entrée
             if ($id <= 0 || $count <= 0) {
                 return $this->json(['error' => 'Invalid product ID or quantity'], Response::HTTP_BAD_REQUEST);
             }
 
+            // Ajout du produit au panier
             $this->cartServices->addToCart($id, $count);
 
+            // Si la requête est AJAX, renvoyer une réponse JSON
             if ($request->isXmlHttpRequest()) {
                 return $this->json([
                     'status' => 'success',
                     'message' => 'Product added to cart',
-                    'cart' => $this->cartServices->getFullCart() // Vérifie que cela renvoie le bon format
+                    'cart' => $this->cartServices->getFullCart()
                 ], Response::HTTP_OK);
             }
 
+            // Si la requête n'est pas AJAX, rediriger vers le panier
             return $this->redirectToRoute('app_cart');
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 
     #[Route('/cart/delete/{id}/1', name: 'cart_delete')]
     public function deleteFromCart(int $id, Request $request): Response
     {
-        $this->cartServices->deleteFromCart($id);
+        try {
+            // Suppression du produit du panier
+            $this->cartServices->deleteFromCart($id);
 
-        // Si la requête est Ajax, on renvoie une réponse JSON
-        if ($request->isXmlHttpRequest()) {
-            return $this->json([
-                'status' => 'success',
-                'message' => 'Product removed from cart',
-                'cart' => $this->cartServices->getFullCart()
-            ]);
+            // Si la requête est AJAX, renvoyer une réponse JSON
+            if ($request->isXmlHttpRequest()) {
+                return $this->json([
+                    'status' => 'success',
+                    'message' => 'Product removed from cart',
+                    'cart' => $this->cartServices->getFullCart()
+                ]);
+            }
+
+            // Sinon, rediriger vers le panier
+            return $this->redirectToRoute('app_cart');
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return $this->redirectToRoute('app_cart');
     }
 
-    #[Route('/cart/delete-all/{id}/{count}', name: 'cart_delete_all')]
-    public function deleteAllToCart(int $id, Request $request, int $count = 1): Response
+    #[Route('/cart/delete-all/{id}/{quantity}', name: 'cart_delete_all')]
+    public function deleteAllFromCart(int $id, Request $request): Response
     {
-        $this->cartServices->deleteAllToCart($id, $count);
+        try {
+            // Suppression complète du produit du panier
+            $this->cartServices->deleteAllToCart($id);
 
-        // Si la requête est Ajax, on renvoie une réponse JSON
-        if ($request->isXmlHttpRequest()) {
-            return $this->json([
-                'status' => 'success',
-                'message' => 'All products removed from cart',
-                'cart' => $this->cartServices->getFullCart()
-            ]);
+            // Si la requête est AJAX, renvoyer une réponse JSON
+            if ($request->isXmlHttpRequest()) {
+                return $this->json([
+                    'status' => 'success',
+                    'message' => 'All products removed from cart',
+                    'cart' => $this->cartServices->getFullCart()
+                ]);
+            }
+
+            // Sinon, rediriger vers le panier
+            return $this->redirectToRoute('app_cart');
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return $this->redirectToRoute('app_cart');
     }
-
-
 
     #[Route('/cart/get', name: 'app_get_cart')]
     public function getCart(): Response
     {
-        $cart = $this->cartServices->getFullCart();
+        try {
+            // Récupérer les informations du panier
+            $cart = $this->cartServices->getFullCart();
 
-        // Vérification que le panier existe et contient des articles
-        if (!$cart || !isset($cart['items'])) {
+            // Si le panier est vide, renvoyer une réponse JSON vide
+            if (empty($cart['items'])) {
+                return $this->json([
+                    'items' => [],
+                    'cart_count' => 0,
+                    'sub_total' => 0,
+                    'total' => 0
+                ], Response::HTTP_OK);
+            }
+
+            // Renvoyer les détails du panier avec sous-total et total
             return $this->json([
-                'items' => [],
-                'cart_count' => 0,
-                'sub_total' => 0,
-                'total' => 0, // Assurez-vous d'inclure le total
+                'items' => $cart['items'],
+                'cart_count' => count($cart['items']),
+                'sub_total' => $cart['data']['subTotalHT'],
+                'total' => $cart['data']['subTotalTTC']
             ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // Calculer le sous-total et le total si ce n'est pas déjà fait dans getFullCart()
-        $subTotal = 0;
-        foreach ($cart['items'] as $item) {
-            $subTotal += $item['sub_total']; // Assurez-vous que sub_total existe dans chaque item
-        }
-
-        // Ajoutez d'autres calculs si nécessaire pour le total
-        $total = $subTotal; // Ajustez si vous avez des frais d'expédition ou des taxes
-
-        // Ajoutez sub_total et total à la réponse
-        return $this->json([
-            'items' => $cart['items'],
-            'cart_count' => count($cart['items']),
-            'sub_total' => $subTotal,
-            'total' => $total,
-        ], Response::HTTP_OK);
     }
 }
