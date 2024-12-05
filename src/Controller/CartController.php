@@ -20,15 +20,12 @@ class CartController extends AbstractController
     #[Route('/cart', name: 'app_cart')]
     public function index(): Response
     {
-        // Récupère le panier complet
         $cart = $this->cartServices->getFullCart();
 
-        // Si le panier est vide, redirige vers la page d'accueil
         if (empty($cart['items'])) {
             return $this->redirectToRoute('app_home');
         }
 
-        // Convertir les données du panier en JSON pour les utiliser côté client
         $cart_json = json_encode($cart);
 
         return $this->render('cart/index.html.twig', [
@@ -41,15 +38,12 @@ class CartController extends AbstractController
     public function addToCart(int $id, int $count = 1, Request $request): Response
     {
         try {
-            // Vérification des paramètres d'entrée
             if ($id <= 0 || $count <= 0) {
                 return $this->json(['error' => 'Invalid product ID or quantity'], Response::HTTP_BAD_REQUEST);
             }
 
-            // Ajout du produit au panier
             $this->cartServices->addToCart($id, $count);
 
-            // Si la requête est AJAX, renvoyer une réponse JSON
             if ($request->isXmlHttpRequest()) {
                 return $this->json([
                     'status' => 'success',
@@ -58,7 +52,6 @@ class CartController extends AbstractController
                 ], Response::HTTP_OK);
             }
 
-            // Si la requête n'est pas AJAX, rediriger vers le panier
             return $this->redirectToRoute('app_cart');
         } catch (\Exception $e) {
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -69,10 +62,8 @@ class CartController extends AbstractController
     public function deleteFromCart(int $id, Request $request): Response
     {
         try {
-            // Suppression du produit du panier
             $this->cartServices->deleteFromCart($id);
 
-            // Si la requête est AJAX, renvoyer une réponse JSON
             if ($request->isXmlHttpRequest()) {
                 return $this->json([
                     'status' => 'success',
@@ -81,7 +72,6 @@ class CartController extends AbstractController
                 ]);
             }
 
-            // Sinon, rediriger vers le panier
             return $this->redirectToRoute('app_cart');
         } catch (\Exception $e) {
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -92,10 +82,8 @@ class CartController extends AbstractController
     public function deleteAllFromCart(int $id, Request $request): Response
     {
         try {
-            // Suppression complète du produit du panier
             $this->cartServices->deleteAllToCart($id);
 
-            // Si la requête est AJAX, renvoyer une réponse JSON
             if ($request->isXmlHttpRequest()) {
                 return $this->json([
                     'status' => 'success',
@@ -104,7 +92,6 @@ class CartController extends AbstractController
                 ]);
             }
 
-            // Sinon, rediriger vers le panier
             return $this->redirectToRoute('app_cart');
         } catch (\Exception $e) {
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -115,25 +102,13 @@ class CartController extends AbstractController
     public function getCart(): Response
     {
         try {
-            // Récupérer les informations du panier
             $cart = $this->cartServices->getFullCart();
 
-            // Si le panier est vide, renvoyer une réponse JSON vide
-            if (empty($cart['items'])) {
-                return $this->json([
-                    'items' => [],
-                    'cart_count' => 0,
-                    'sub_total' => 0,
-                    'total' => 0
-                ], Response::HTTP_OK);
-            }
-
-            // Renvoyer les détails du panier avec sous-total et total
             return $this->json([
                 'items' => $cart['items'],
                 'cart_count' => count($cart['items']),
-                'sub_total' => $cart['data']['subTotalHT'],
-                'total' => $cart['data']['subTotalTTC']
+                'sub_total' => (float) ($cart['data']['subTotalHT'] ?? 0),
+                'total' => (float) ($cart['data']['subTotalTTC'] ?? 0)
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

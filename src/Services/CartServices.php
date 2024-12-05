@@ -28,11 +28,9 @@ class CartServices
 
         $cart = $this->getCart(); // Récupérer le panier
 
-        // Si le produit existe déjà dans le panier, on incrémente la quantité
         if (isset($cart[$id])) {
-            $cart[$id] += $count; // Incrémenter la quantité
+            $cart[$id] += $count;
         } else {
-            // Sinon, on l'ajoute avec la quantité fournie
             $cart[$id] = $count;
         }
 
@@ -41,32 +39,32 @@ class CartServices
 
     public function deleteFromCart(int $id): void
     {
-        $cart = $this->getCart(); // On récupère le panier
+        $cart = $this->getCart();
 
-        if (isset($cart[$id])) {  // Si c'est défini, c'est que le produit existe déjà dans le panier
-            if ($cart[$id] > 1) { // Vérifie si le produit existe plus d'une fois
+        if (isset($cart[$id])) {
+            if ($cart[$id] > 1) {
                 $cart[$id]--;
             } else {
-                unset($cart[$id]); // Si on a un seul produit, on le retire
+                unset($cart[$id]);
             }
-            $this->updateCart($cart); // Mise à jour du panier
+            $this->updateCart($cart);
         }
     }
 
     public function deleteAllToCart(int $id): void
     {
-        $cart = $this->getCart(); // On récupère le panier
+        $cart = $this->getCart();
 
-        if (isset($cart[$id])) {  // Si c'est défini, c'est que le produit existe déjà dans le panier
-            unset($cart[$id]); // On supprime tous les produits du panier
-            $this->updateCart($cart); // Mise à jour du panier
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            $this->updateCart($cart);
         }
     }
 
     public function updateCart(array $cart): void
     {
         $this->session->set('cart', $cart);
-        $this->session->set('cartData', $this->getFullCart()); // Données du produit dans la session
+        $this->session->set('cartData', $this->getFullCart());
     }
 
     public function getCart(): array
@@ -77,35 +75,37 @@ class CartServices
     public function getFullCart(): array
     {
         $cart = $this->getCart();
-        $fullCart = ['items' => []]; // Assurez-vous que 'items' est initialisé
+        $fullCart = ['items' => []];
         $quantity_cart = 0;
-        $subTotal = 0;
+        $subTotal = 0.0;
 
         foreach ($cart as $id => $quantity) {
             $product = $this->repoProduct->find($id);
 
             if ($product) {
-                $subTotalPrice = $quantity * $product->getRegularPrice(); // Calcul du sous-total
+                $price = (float) $product->getSoldePrice(); // Forcer la conversion en float
+                $subTotalPrice = $quantity * $price;
+
                 $fullCart['items'][] = [
                     "quantity" => $quantity,
-                    "sub_total" => $subTotalPrice, // Ajoutez le sous-total ici
+                    "sub_total" => $subTotalPrice,
                     "product" => [
                         'id' => $product->getId(),
                         'name' => $product->getName(),
                         'slug' => $product->getSlug(),
                         'imageUrls' => $product->getImageUrls(),
-                        'soldePrice' => $product->getSoldePrice(),
-                        'regularPrice' => $product->getRegularPrice(),
+                        'soldePrice' => $price,
+                        'regularPrice' => (float) $product->getRegularPrice(),
                     ],
                 ];
                 $quantity_cart += $quantity;
-                $subTotal += $subTotalPrice; // Additionner les sous-totaux
+                $subTotal += $subTotalPrice;
             }
         }
 
         $fullCart['data'] = [
-            'subTotalHT' => $subTotal,
-            'subTotalTTC' => $subTotal + ($subTotal * $this->tva),
+            'subTotalHT' => (float) $subTotal,
+            'subTotalTTC' => (float) ($subTotal + ($subTotal * $this->tva)),
             'quantity' => $quantity_cart
         ];
 

@@ -184,33 +184,49 @@ export const displayCart = (cart = null) => {
     if (!cart) return;
 
     let tbody = document.querySelector('.shop_cart_table tbody');
-    let cart_total_amounts = document.querySelectorAll('.cart_total_amount');
+    let cart_total_amounts = document.querySelectorAll('.cart_total_amount1');
+    let cart_total_amountss = document.querySelectorAll('.cart_total_amount2');
+    let cart_total_amountsss = document.querySelectorAll('.cart_total_amount3');
 
     if (tbody) {
         tbody.innerHTML = ""; // Vide le tableau des produits
 
+        let totalHT = 0; // Total Hors Taxes
+        let totalTTC = 0; // Total Toutes Taxes Comprises
+
         // Ajoute les nouveaux produits dans le tableau
         cart.items.forEach((item) => {
-            let { product, quantity, sub_total } = item;
+            let product = item.product || {};
+            let quantity = item.quantity || 0;
+            let sub_total = item.sub_total || 0;
+            let productPrice = product.soldePrice || 0;
+            let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
+            let productName = product.name || 'Unknown Product';
+
+            totalHT += sub_total; // Ajout du sous-total HT
+            totalTTC += sub_total * 1.2; // Ajout du sous-total TTC avec TVA à 20%
+
             let content = `
              <tr>
-                 <td class="product-thumbnail"><a><img width="50" alt="product1" src="/assets/images/products/${product.imageUrls[0]}"></a></td>
-                 <td class="product-name"><a>${product.name}</a></td>
-                 <td class="product-price">${formatPrice(product.soldePrice / 100)}</td>
+                 <td class="product-thumbnail">
+                     <a><img width="50" alt="${productName}" src="/assets/images/products/${product.imageUrls[0]}"></a>
+                 </td>
+                 <td class="product-name"><a>${productName}</a></td>
+                 <td class="product-price">${formatPrice(productPrice / 100)}</td>
                  <td class="product-quantity">
                      <div class="quantity">
-                         <a href="/cart/delete/${product.id}/1">
+                         <a href="/cart/delete/${product.id || 0}/1">
                              <input type="button" value="-" class="minus">
                          </a>
                          <input type="text" name="quantity" value="${quantity}" title="Qty" size="4" class="qty">
-                         <a href="/cart/add/${product.id}/1">
+                         <a href="/cart/add/${product.id || 0}/1">
                              <input type="button" value="+" class="plus">
                          </a>
                      </div>
                  </td>
                  <td class="product-subtotal">${formatPrice(sub_total / 100)}</td>
                  <td class="product-remove">
-                     <a href="/cart/delete-all/${product.id}/${item.quantity}">
+                     <a href="/cart/delete-all/${product.id || 0}/${quantity}">
                          <i class="ti-close"></i>
                      </a>
                  </td>
@@ -219,39 +235,83 @@ export const displayCart = (cart = null) => {
             tbody.innerHTML += content;
         });
 
-        // Met à jour le total du panier
+        // Mise à jour du total HT et TTC dans l'affichage
         cart_total_amounts.forEach(cart_total_amount => {
-            cart_total_amount.innerHTML = formatPrice(cart.sub_total / 100);
+            cart_total_amount.innerHTML = `
+                <span> ${formatPrice(totalHT / 100)}</span>            
+            `;
         });
+        cart_total_amountss.forEach(cart_total_amount => {
+            cart_total_amount.innerHTML = `
+                <span></span>
+            `;
+        });
+        cart_total_amountsss.forEach(cart_total_amount => {
+            cart_total_amount.innerHTML = `
+                <span> ${formatPrice(totalTTC / 100)}</span>
+            `;
+        });
+
     }
 };
 
+
+
 export const updateHeaderCart = async (cart = null) => {
-    let cart_count = document.querySelector(".cart_count")
-    let cart_list = document.querySelector(".cart_list")
-    let cart_price_value = document.querySelector(".cart_price_value")
+    let cart_count = document.querySelector(".cart_count");
+    let cart_list = document.querySelector(".cart_list");
+    let cart_price_value = document.querySelector(".cart_price_value");
+
     if (!cart) {
-        // cart not found
-        cart = await fetchData("/cart/get")
+        // Récupération des données du panier depuis l'API
+        cart = await fetchData("/cart/get");
     }
 
+    console.log('Cart:', cart); // Debug : afficher le panier complet
+
     if (cart && cart.items && cart.items.length > 0) {
-        cart_count.textContent = cart.items.length
-        cart_price_value.textContent = formatPrice(cart.sub_total / 100)
+        // Mise à jour du nombre d'articles dans le header
+        cart_count.textContent = cart.items.reduce((total, item) => total + item.quantity, 0);
+
+        // Calcul du sous-total
+        let subTotal = cart.items.reduce((total, item) => {
+            let productPrice = item.product.soldePrice || 0;
+            return total + productPrice * item.quantity;
+        }, 0);
+
+        // Mise à jour du sous-total
+        cart_price_value.textContent = formatPrice(subTotal / 100);
+
         let content = "";
         cart.items.forEach((item) => {
+            let product = item.product || {};
+            let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
+            let productName = product.name || 'Unknown Product';
+            let productPrice = product.soldePrice || 0;
+
             content += `
             <div class="cart-item">
                 <div class="cart-item-image">
-                    <img src="/assets/images/products/${item.product.imageUrls[0]}" alt="product image">
+                    <img src="/assets/images/products/${productImage}" alt="${productName}">
                 </div>
                 <div class="cart-item-info">
-                    <div class="cart-item-name">${item.product.name}</div>
-                    <div class="cart-item-price">${formatPrice(item.product.soldePrice / 100)}</div>
+                    <div class="cart-item-name">${productName}</div>
+                    <div class="cart-item-price">${formatPrice(productPrice / 100)}</div>
+                    <div class="cart-item-remove">
+                        <a href="/cart/delete-all/${product.id}/${item.quantity}">
+                            <i class="ti-close"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
             `;
         });
+
         cart_list.innerHTML = content;
+    } else {
+        // Si le panier est vide
+        cart_count.textContent = "0";
+        cart_price_value.textContent = formatPrice(0);
+        cart_list.innerHTML = "<div class='empty-cart'>Votre panier est vide !</div>";
     }
 };

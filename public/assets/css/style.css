@@ -1,6 +1,61 @@
 /*===================================*
   01.GENERAL STYLE
 *===================================*/
+
+.cart_list {
+    display: flex;
+    flex-direction: column; /* Affichage en colonne des produits */
+    gap: 10px; /* Espacement entre les produits */
+}
+
+.cart-item {
+    display: flex;
+    align-items: center; /* Aligne tout le contenu sur la même ligne */
+    justify-content: space-between; /* Espace entre les éléments */
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px 0;
+}
+
+.cart-item-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px; /* Marge à droite de l'image */
+}
+
+.cart-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px; /* Arrondir les coins de l'image */
+}
+
+.cart-item-info {
+    flex-grow: 1; /* Permet à la description du produit de prendre de l'espace restant */
+}
+
+.cart-item-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px; /* Espacement entre le nom et le prix */
+}
+
+.cart-item-price {
+    font-size: 12px;
+    color: #666;
+}
+
+.cart-item-remove a {
+    color: red;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.cart-item-remove i {
+    font-size: 18px; /* Augmenter la taille de l'icône si nécessaire */
+}
+
+
 html, body {
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
