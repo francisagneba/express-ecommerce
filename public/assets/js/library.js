@@ -288,6 +288,7 @@ export const updateHeaderCart = async (cart = null) => {
             let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
             let productName = product.name || 'Unknown Product';
             let productPrice = product.soldePrice || 0;
+            let quantity = item.quantity || 0;
 
             content += `
             <div class="cart-item">
@@ -296,6 +297,7 @@ export const updateHeaderCart = async (cart = null) => {
                 </div>
                 <div class="cart-item-info">
                     <div class="cart-item-name">${productName}</div>
+                    <div>${quantity}</div>
                     <div class="cart-item-price">${formatPrice(productPrice / 100)}</div>
                     <div class="cart-item-remove">
                         <a href="/cart/delete-all/${product.id}/${item.quantity}">
