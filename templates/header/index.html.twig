@@ -43,7 +43,12 @@
 							<li>
 								<i class="ti-mobile"></i>
 								<span>
-									{{ app.session.get("setting").phone }}
+									{% if app.session.get("setting") and app.session.get("setting").phone %}
+										{{ app.session.get("setting").phone }}
+									{% else %}
+										<span>No phone available</span>
+									{% endif %}
+
 								</span>
 							</li>
 						</ul>
@@ -106,7 +111,13 @@
 			<nav class="navbar navbar-expand-lg">
 				<a routerlink="/" class="navbar-brand" ng-reflect-router-link="/" href="/">
 					<h2>
-						{{ app.session.get("setting").websiteName }}
+						{% set setting = app.session.get("setting") %}
+						{% if setting and setting.websiteName is defined %}
+							<h2>{{ setting.websiteName }}</h2>
+						{% else %}
+							<h2>Nom du site par défaut</h2>
+						{% endif %}
+
 					</h2>
 				</a>
 				<button type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-expanded="false" class="navbar-toggler collapsed">
@@ -129,21 +140,21 @@
 										</li>
 									{% endfor %}
 									<!-- <li >
-																											                                        <a 
-																											                                            routerlink="/contact" class="dropdown-item nav-link nav_item"
-																											                                            ng-reflect-router-link="/contact" href="/contact">Contact Us</a></li>
-																											                                    <li ><a  routerlink="/fqa"
-																											                                            class="dropdown-item nav-link nav_item" ng-reflect-router-link="/fqa"
-																											                                            href="/fqa">Faq</a></li>
-																											                                    <li ><a 
-																											                                            routerlink="/login" class="dropdown-item nav-link nav_item"
-																											                                            ng-reflect-router-link="/login" href="/login">Login</a></li>
-																											                                    <li ><a 
-																											                                            routerlink="/register" class="dropdown-item nav-link nav_item"
-																											                                            ng-reflect-router-link="/register" href="/register">Register</a></li>
-																											                                    <li ><a  routerlink="/terms"
-																											                                            class="dropdown-item nav-link nav_item" ng-reflect-router-link="/terms"
-																											                                            href="/terms">Terms and Conditions</a></li> -->
+																																													                                        <a 
+																																													                                            routerlink="/contact" class="dropdown-item nav-link nav_item"
+																																													                                            ng-reflect-router-link="/contact" href="/contact">Contact Us</a></li>
+																																													                                    <li ><a  routerlink="/fqa"
+																																													                                            class="dropdown-item nav-link nav_item" ng-reflect-router-link="/fqa"
+																																													                                            href="/fqa">Faq</a></li>
+																																													                                    <li ><a 
+																																													                                            routerlink="/login" class="dropdown-item nav-link nav_item"
+																																													                                            ng-reflect-router-link="/login" href="/login">Login</a></li>
+																																													                                    <li ><a 
+																																													                                            routerlink="/register" class="dropdown-item nav-link nav_item"
+																																													                                            ng-reflect-router-link="/register" href="/register">Register</a></li>
+																																													                                    <li ><a  routerlink="/terms"
+																																													                                            class="dropdown-item nav-link nav_item" ng-reflect-router-link="/terms"
+																																													                                            href="/terms">Terms and Conditions</a></li> -->
 								</ul>
 							</div>
 						</li>
@@ -187,29 +198,29 @@
 										</div>
 									{% endfor %}
 									<!-- <div  class="col-sm-4">
-																											                                        <div  class="header-banner"><img
-																											                                                 alt="menu_banner1"
-																											                                                src="/assets/files/megaCollection/8932488097310286313588503554459963159142614451684826970123.png">
-																											                                            <div  class="banne_info">
-																											                                                <h6 >15% Off</h6>
-																											                                                <h4 >Men's Fashion</h4><a
-																											                                                     href="http://localhost:4300/">Shop
-																											                                                    Now</a>
-																											                                            </div>
-																											                                        </div>
-																											                                    </div>
-																											                                    <div  class="col-sm-4">
-																											                                        <div  class="header-banner"><img
-																											                                                 alt="menu_banner1"
-																											                                                src="/assets/files/megaCollection/1412527185807988177642011518607795945067036381684827015102.png">
-																											                                            <div  class="banne_info">
-																											                                                <h6 >23% Off</h6>
-																											                                                <h4 >Kids Fashion</h4><a
-																											                                                     href="http://localhost:4300/">Shop
-																											                                                    Now</a>
-																											                                            </div>
-																											                                        </div>
-																											                                    </div> -->
+																																													                                        <div  class="header-banner"><img
+																																													                                                 alt="menu_banner1"
+																																													                                                src="/assets/files/megaCollection/8932488097310286313588503554459963159142614451684826970123.png">
+																																													                                            <div  class="banne_info">
+																																													                                                <h6 >15% Off</h6>
+																																													                                                <h4 >Men's Fashion</h4><a
+																																													                                                     href="http://localhost:4300/">Shop
+																																													                                                    Now</a>
+																																													                                            </div>
+																																													                                        </div>
+																																													                                    </div>
+																																													                                    <div  class="col-sm-4">
+																																													                                        <div  class="header-banner"><img
+																																													                                                 alt="menu_banner1"
+																																													                                                src="/assets/files/megaCollection/1412527185807988177642011518607795945067036381684827015102.png">
+																																													                                            <div  class="banne_info">
+																																													                                                <h6 >23% Off</h6>
+																																													                                                <h4 >Kids Fashion</h4><a
+																																													                                                     href="http://localhost:4300/">Shop
+																																													                                                    Now</a>
+																																													                                            </div>
+																																													                                        </div>
+																																													                                    </div> -->
 								</div>
 							</div>
 						</li>
@@ -218,7 +229,7 @@
 						</li>
 						<li>
 							<a routerlink="/contact" class="nav-link nav_item" ng-reflect-router-link="/contact" href="/contact">Contact
-																								                        Us</a>
+																																								                        Us</a>
 						</li>
 					</ul>
 				</div>

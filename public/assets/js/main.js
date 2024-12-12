@@ -1,17 +1,26 @@
 
-import { displayCompare, displayCart, } from './library.js';
+import { displayCompare, displayCart, displayWishlist } from './library.js';
 
 window.onload = () => {
-    console.log("cart");
-    let mainContent = document.querySelector('.main_content')
-    let cart = JSON.parse(mainContent?.dataset?.cart || false)
 
-    displayCart(cart)
+    let mainContent;
 
     console.log("compare");
     mainContent = document.querySelector('.compare_container')
     let compare = JSON.parse(mainContent?.dataset?.compare || false)
 
     displayCompare(compare)
+
+    console.log("wishlist");
+    mainContent = document.querySelector('.wishlist_content')
+    let wishlist = JSON.parse(mainContent?.dataset?.wishlist || false)
+
+    displayWishlist(wishlist)
+
+    console.log("cart");
+    mainContent = document.querySelector('.cart_content')
+    let cart = JSON.parse(mainContent?.dataset?.cart || false)
+
+    displayCart(cart)
 
 }

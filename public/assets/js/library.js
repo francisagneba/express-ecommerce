@@ -51,56 +51,105 @@ export const manageCartLink = async (event) => {
     let requestUrl = link.href;
     const cart = await fetchData(requestUrl); // Récupère les nouvelles données du panier
 
-    // Mise à jour de l'affichage du panier avec les nouvelles données
-    displayCart(cart);
-    updateHeaderCart(cart); // Mise à jour du nombre d'articles dans le header
+    // // Mise à jour de l'affichage du panier avec les nouvelles données
+    // displayCart(cart);
+    // updateHeaderCart(cart); // Mise à jour du nombre d'articles dans le header
 
     let productId = requestUrl.split('/')[5];
     let product = await fetchData("/product/get/" + productId);
 
     if (requestUrl.search('/cart/add/') != -1) {
-        addFlashMessage(`Product (${product ? product.name : 'Item'}) added to cart!`);
+        // add to cart
+        if (product) {
+            addFlashMessage(`Product (${product.name}) added to cart !`)
+        } else {
+            addFlashMessage("Product added to cart !")
+        }
     }
 
     if (requestUrl.search('/cart/remove/') != -1) {
-        addFlashMessage(`Product (${product ? product.name : 'Item'}) removed from cart!`, "danger");
+        // remove from cart
+        if (product) {
+            addFlashMessage(`Product (${product.name}) removed to cart !`, "danger")
+        } else {
+            addFlashMessage("Product removed to cart !", "danger")
+        }
     }
+    // Mise à jour de l'affichage du panier avec les nouvelles données
+    displayCart(cart)
+    // Mise à jour du nombre d'articles dans le header
+    updateHeaderCart()
 };
 
 export const manageCompareLink = async (event) => {
     event.preventDefault();
+    console.log("manageCompareLink");
     let link = event.target.href ? event.target : event.target.parentNode;
     let requestUrl = link.href;
 
-    try {
-        const compare = await fetchData(requestUrl);
-        let productId = requestUrl.split('/')[5];
-        let product = await fetchData("/product/get/" + productId);
+    console.log({ requestUrl });
 
-        if (requestUrl.search('/compare/add/') !== -1) {
-            if (product) {
-                addFlashMessage(`Product (${product.name}) added to compare list!`);
-            } else {
-                addFlashMessage("Product added to compare list!");
-            }
-            // Redirection après le message
-            setTimeout(() => {
-                window.location.href = '/compare';
-            }, 1000); // Délai d'une seconde pour afficher le message avant de rediriger
-        }
 
-        if (requestUrl.search('/compare/remove/') !== -1) {
-            if (product) {
-                addFlashMessage(`Product (${product.name}) removed from compare list!`, "danger");
-            } else {
-                addFlashMessage("Product removed from compare list!", "danger");
-            }
-            displayCompare();
+    const compare = await fetchData(requestUrl);
+    let productId = requestUrl.split('/')[5];
+    let product = await fetchData("/product/get/" + productId);
+
+    if (requestUrl.search('/compare/add/') != -1) {
+        // add to cart
+        if (product) {
+            addFlashMessage(`Product (${product.name}) added to compare list!`);
+        } else {
+            addFlashMessage("Product added to compare list!");
         }
-    } catch (error) {
-        console.error("Erreur:", error);
-        addFlashMessage("An error occurred. Please try again.", "danger");
     }
+
+    if (requestUrl.search('/compare/remove/') != -1) {
+        // Remove from cart
+        if (product) {
+            addFlashMessage(`Product (${product.name}) removed from compare list!`, "danger");
+        } else {
+            addFlashMessage("Product removed from compare list!", "danger");
+        }
+    }
+
+    displayCompare();
+
+};
+
+export const manageWishListLink = async (event) => {
+    event.preventDefault();
+    console.log("manageWishListLink");
+    let link = event.target.href ? event.target : event.target.parentNode;
+    let requestUrl = link.href;
+
+    console.log({ requestUrl });
+
+
+    const wishlist = await fetchData(requestUrl);
+    console.log(wishlist);
+
+    let productId = requestUrl.split('/')[5];
+    let product = await fetchData("/product/get/" + productId);
+
+    if (requestUrl.search('/wishlist/add/') != -1) {
+        if (product) {
+            addFlashMessage(`Product (${product.name}) added to wish list!`);
+        } else {
+            addFlashMessage("Product added to wish list!");
+        }
+
+    }
+
+    if (requestUrl.search('/wishlist/remove/') != -1) {
+        if (product) {
+            addFlashMessage(`Product (${product.name}) removed from wish list!`, "danger");
+        } else {
+            addFlashMessage("Product removed from wish list!", "danger");
+        }
+
+    }
+
+    displayWishlist(wishlist);
 };
 
 export const displayCompare = async (compare = null) => {
@@ -165,8 +214,16 @@ export const addCompareEventListener = () => {
     });
 }
 
+export const addWiwhListEventListenerToLink = () => {
+    let links = document.querySelectorAll(".add-to-wishlist, .wishlist_table .remove-to-wishlist")
+
+    links.forEach(link => {
+        link.addEventListener("click", manageWishListLink)
+    });
+}
+
 export const addCartEventListenerToLink = () => {
-    let links = document.querySelectorAll('tbody a');
+    let links = document.querySelectorAll('.shop_cart_table tbody a');
     links.forEach((link) => {
         link.addEventListener("click", manageCartLink); // Vérifier que l'événement est bien attaché
     });
@@ -255,6 +312,52 @@ export const displayCart = (cart = null) => {
     }
 };
 
+export const displayWishlist = (wishlist = null) => {
+
+    addWiwhListEventListenerToLink()
+    if (!wishlist) return;
+
+    let tbody = document.querySelector('.wishlist_table tbody');
+
+
+    if (tbody) {
+        tbody.innerHTML = ""; // Vide le tableau des produits
+
+        // Ajoute les nouveaux produits dans le tableau
+        wishlist.forEach((product) => {
+
+            let content = `
+            <tr>
+                <td class="product-thumbnail">
+                    <a href="#"><img width="50" height="50" alt="product1" src="/assets/images/products/${product.imageUrls[0]}"></a>
+                </td>
+                <td data-title="Product" class="product-name">
+                    <a href="#">${product.name}</a>
+                </td>
+                <td data-title="Price" class="product-price">
+                    ${formatPrice(product.soldePrice / 100)}</td>
+                <td data-title="Stock Status" class="product-stock-status">
+                    ${product.stock}
+                    <span class="badge badge-pill badge-success">In Stock</span>
+                </td>
+                <td class="product-add-to-cart">
+                    <a href="/cart/add/${product.id}/1" class="btn btn-fill-out btn-addtocart">
+                        <i class="icon-basket-loaded"></i>
+                        Add to Cart
+                    </a>
+                </td>
+                <td data-title="Remove" class="product-remove">
+                    <a href="/wishlist/remove/${product.id}" class ="remove-to-wishlist">
+                        <i class="ti-close"></i>
+                    </a>
+                </td>
+            </tr>
+             `;
+            tbody.innerHTML += content;
+        });
+    }
+    addWiwhListEventListenerToLink()
+};
 
 
 export const updateHeaderCart = async (cart = null) => {

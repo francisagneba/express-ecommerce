@@ -20,9 +20,12 @@ class WishListController extends AbstractController
     {
         $wishlist = $this->wishlistService->getWishListDetails();
 
+        $wishlist_json = json_encode($wishlist);
+
         return $this->render('wish_list/index.html.twig', [
             'controller_name' => 'WishListController',
-            'wishlist' => $wishlist
+            'wishlist' => $wishlist,
+            'wishlist_json' => $wishlist_json,
         ]);
     }
 
@@ -32,9 +35,9 @@ class WishListController extends AbstractController
         $this->wishlistService->addToWishList($productId);
         $wishlist = $this->wishlistService->getWishListDetails();
 
-        return $this->redirectToRoute("app_wish_list");
+        //return $this->redirectToRoute("app_wish_list");
 
-        // return $this->json($wishlist);
+        return $this->json($wishlist);
     }
     #[Route('/wishlist/remove/{productId}', name: 'app_remove_to_wishlist')]
     public function removeToWishList(string $productId): Response
@@ -42,9 +45,9 @@ class WishListController extends AbstractController
         $this->wishlistService->removeToWishList($productId);
         $wishlist = $this->wishlistService->getWishListDetails();
 
-        return $this->redirectToRoute("app_wish_list");
+        //return $this->redirectToRoute("app_wish_list");
 
-        // return $this->json($wishlist);
+        return $this->json($wishlist);
     }
     #[Route('/wishlist/get', name: 'app_get_wishlist')]
     public function getWishList(): Response
