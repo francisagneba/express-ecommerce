@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Services\CompareService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CompareController extends AbstractController
@@ -15,9 +16,13 @@ class CompareController extends AbstractController
     ) {}
 
     #[Route('/compare', name: 'app_compare')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $compare = $this->compareService->getCompareDetails();
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse($compare);
+        }
 
         return $this->render('compare/index.html.twig', [
             'controller_name' => 'CompareController',
@@ -26,18 +31,20 @@ class CompareController extends AbstractController
         ]);
     }
 
+
     #[Route('/compare/add/{productId}', name: 'app_add_to_compare')]
-    public function addToCompare(int $productId): Response
+    public function addToCompare(int $productId): JsonResponse
     {
         try {
             $this->compareService->addToCompare($productId);
+            $compare = $this->compareService->getCompareDetails();
 
-            // Redirection vers la page de comparaison
-            return $this->redirectToRoute('app_compare');
+            return new JsonResponse(['success' => true, 'compare' => $compare], 200);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 400);
         }
     }
+
 
 
     #[Route('/compare/remove/{productId}', name: 'app_remove_to_compare')]
