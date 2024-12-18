@@ -18,11 +18,14 @@ class CartController extends AbstractController
     }
 
     #[Route('/cart', name: 'app_cart')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $cart = $this->cartServices->getFullCart();
 
         if (empty($cart['items'])) {
+            if ($request->isXmlHttpRequest()) {
+                return $this->json(['error' => 'Cart is empty'], Response::HTTP_BAD_REQUEST);
+            }
             return $this->redirectToRoute('app_home');
         }
 
@@ -69,7 +72,7 @@ class CartController extends AbstractController
                     'status' => 'success',
                     'message' => 'Product removed from cart',
                     'cart' => $this->cartServices->getFullCart()
-                ]);
+                ], Response::HTTP_OK);
             }
 
             return $this->redirectToRoute('app_cart');
@@ -103,6 +106,12 @@ class CartController extends AbstractController
     {
         try {
             $cart = $this->cartServices->getFullCart();
+
+            if (empty($cart['items'])) {
+                return $this->json([
+                    'error' => 'Cart is empty'
+                ], Response::HTTP_OK);
+            }
 
             return $this->json([
                 'items' => $cart['items'],

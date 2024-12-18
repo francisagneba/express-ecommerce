@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserCrudController extends AbstractCrudController
@@ -50,6 +51,7 @@ class UserCrudController extends AbstractCrudController
             ]),
             TextField::new('full_name'),
             EmailField::new('email'),
+            AssociationField::new('addresses'),
             TextField::new('password')
                 ->setFormType(RepeatedType::class)
                 ->setFormTypeOptions([

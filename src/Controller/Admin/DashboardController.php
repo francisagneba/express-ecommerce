@@ -4,12 +4,14 @@ namespace App\Controller\Admin;
 
 use App\Entity\Page;
 use App\Entity\User;
+use App\Entity\Address;
 use App\Entity\Product;
 use App\Entity\Setting;
 use App\Entity\Sliders;
 use App\Entity\Category;
 use App\Entity\Collections;
 use Symfony\Component\HttpFoundation\Response;
+use App\Controller\Admin\ProductCrudController;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -52,6 +54,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Products', 'fas fa-list', Product::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-tag', Category::class);
         yield MenuItem::linkToCrud('Users', 'fas fa-users', User::class);
+        yield MenuItem::linkToCrud('Addresses', 'fas fa-address-card', Address::class);
         yield MenuItem::linkToCrud('Pages', 'fas fa-file', Page::class);
         yield MenuItem::linkToCrud('Sliders', 'fas fa-image', Sliders::class);
         yield MenuItem::linkToCrud('Collections', 'fas fa-panorama', Collections::class);

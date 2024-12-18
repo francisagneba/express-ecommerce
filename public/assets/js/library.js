@@ -4,21 +4,30 @@ export const formatPrice = (price) => {
 }
 
 export const addFlashMessage = (message, status = "success") => {
+    // Empêche l'ajout de multiples messages flash simultanément
+    const notificationContainer = document.querySelector(".notification");
+    if (!notificationContainer) return;
+
+    // Vérifie si un message est déjà présent et empêche d'ajouter un autre
+    if (notificationContainer.querySelector(".alert")) {
+        return;  // Ne pas ajouter un autre message si un message est déjà visible
+    }
+
     let text = `
     <div class="alert alert-${status}" role="alert">
     ${message}
     </div>
-    `
-    let audio = document.createElement("audio")
-    audio.src = "/assets/audios/success.wav"
+    `;
+    let audio = document.createElement("audio");
+    audio.src = "/assets/audios/success.wav";
+    audio.play();
 
-    audio.play()
-    document.querySelector(".notification").innerHTML += text
+    notificationContainer.innerHTML += text;
 
     setTimeout(() => {
-        document.querySelector(".notification").innerHTML = ""
-    }, 2000)
-}
+        notificationContainer.innerHTML = "";
+    }, 2000);
+};
 
 export const fetchData = async (requestUrl) => {
     try {
@@ -31,12 +40,19 @@ export const fetchData = async (requestUrl) => {
         }
 
         const contentType = response.headers.get("content-type");
+
         if (contentType && contentType.includes("application/json")) {
             let data = await response.json();
             console.log("Fetched Data:", data);
             return data;
+        } else if (contentType && contentType.includes("text/html")) {
+            let errorText = await response.text();
+            console.error("HTML response received instead of JSON:", errorText);
+            throw new Error("Expected JSON, but received HTML");
         } else {
-            throw new Error("Expected JSON, but received: " + contentType);
+            let errorText = await response.text();
+            console.error("Unexpected response type:", contentType, errorText);
+            throw new Error("Unexpected response type: " + contentType);
         }
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -45,18 +61,20 @@ export const fetchData = async (requestUrl) => {
     }
 };
 
+
+
+
+
 export const manageCartLink = async (event) => {
     event.preventDefault();
-    let link = event.target.href ? event.target : event.target.parentNode;
-    let requestUrl = link.href;
-    const cart = await fetchData(requestUrl); // Récupère les nouvelles données du panier
-
-    // // Mise à jour de l'affichage du panier avec les nouvelles données
-    // displayCart(cart);
-    // updateHeaderCart(cart); // Mise à jour du nombre d'articles dans le header
+    let link = event.target.href ? event.target : event.target.parentNode
+    let requestUrl = link.href
+    const cart = await fetchData(requestUrl)
 
     let productId = requestUrl.split('/')[5];
-    let product = await fetchData("/product/get/" + productId);
+    let product = await fetchData("/product/get/" + productId)
+
+
 
     if (requestUrl.search('/cart/add/') != -1) {
         // add to cart
@@ -66,7 +84,6 @@ export const manageCartLink = async (event) => {
             addFlashMessage("Product added to cart !")
         }
     }
-
     if (requestUrl.search('/cart/remove/') != -1) {
         // remove from cart
         if (product) {
@@ -75,46 +92,38 @@ export const manageCartLink = async (event) => {
             addFlashMessage("Product removed to cart !", "danger")
         }
     }
-    // Mise à jour de l'affichage du panier avec les nouvelles données
     displayCart(cart)
-    // Mise à jour du nombre d'articles dans le header
     updateHeaderCart()
-};
+}
+
 
 export const manageCompareLink = async (event) => {
     event.preventDefault();
-    console.log("manageCompareLink");
     let link = event.target.href ? event.target : event.target.parentNode;
     let requestUrl = link.href;
-
-    console.log({ requestUrl });
-
 
     const compare = await fetchData(requestUrl);
     let productId = requestUrl.split('/')[5];
     let product = await fetchData("/product/get/" + productId);
 
+    if (!product) {
+        addFlashMessage("Product not found for comparison.", "danger");
+        return;  // Si le produit n'est pas trouvé, arrêter l'exécution
+    }
+
     if (requestUrl.search('/compare/add/') != -1) {
-        // add to cart
-        if (product) {
-            addFlashMessage(`Product (${product.name}) added to compare list!`);
-        } else {
-            addFlashMessage("Product added to compare list!");
-        }
+        // add to compare
+        addFlashMessage(`Product (${product.name}) added to compare list!`);
     }
 
     if (requestUrl.search('/compare/remove/') != -1) {
-        // Remove from cart
-        if (product) {
-            addFlashMessage(`Product (${product.name}) removed from compare list!`, "danger");
-        } else {
-            addFlashMessage("Product removed from compare list!", "danger");
-        }
+        // remove from compare
+        addFlashMessage(`Product (${product.name}) removed from compare list!`, "danger");
     }
 
     displayCompare();
-
 };
+
 
 export const manageWishListLink = async (event) => {
     event.preventDefault();
@@ -223,15 +232,16 @@ export const addWiwhListEventListenerToLink = () => {
 }
 
 export const addCartEventListenerToLink = () => {
-    let links = document.querySelectorAll('.shop_cart_table tbody a');
-    links.forEach((link) => {
-        link.addEventListener("click", manageCartLink); // Vérifier que l'événement est bien attaché
-    });
 
-    let add_to_cart_links = document.querySelectorAll('a.add-to-cart, a.item_remove,  a.btn-addtocart');
-    add_to_cart_links.forEach((link) => {
-        link.addEventListener("click", manageCartLink); // Vérifier ici aussi
-    });
+    let links = document.querySelectorAll('.shop_cart_table tbody a, a.add-to-cart, a.item_remove,  a.btn-addtocart')
+    links.forEach((link) => {
+        link.addEventListener("click", manageCartLink)
+    })
+
+    // let add_to_cart_links = document.querySelectorAll('a.add-to-cart, a.item_remove,  a.btn-addtocart')
+    // add_to_cart_links.forEach((link) => {
+    //     link.addEventListener("click", manageCartLink)
+    // })
 }
 
 export const displayCart = (cart = null) => {
@@ -272,7 +282,7 @@ export const displayCart = (cart = null) => {
                  <td class="product-price">${formatPrice(productPrice / 100)}</td>
                  <td class="product-quantity">
                      <div class="quantity">
-                         <a href="/cart/delete/${product.id || 0}/1">
+                         <a href="/cart/delete/${product.id || 0}/1" class="item_remove">
                              <input type="button" value="-" class="minus">
                          </a>
                          <input type="text" name="quantity" value="${quantity}" title="Qty" size="4" class="qty">
@@ -283,7 +293,7 @@ export const displayCart = (cart = null) => {
                  </td>
                  <td class="product-subtotal">${formatPrice(sub_total / 100)}</td>
                  <td class="product-remove">
-                     <a href="/cart/delete-all/${product.id || 0}/${quantity}">
+                     <a href="/cart/delete-all/${product.id || 0}/${quantity}" class="item_remove">
                          <i class="ti-close"></i>
                      </a>
                  </td>
@@ -308,6 +318,9 @@ export const displayCart = (cart = null) => {
                 <span> ${formatPrice(totalTTC / 100)}</span>
             `;
         });
+
+        // Réattacher les événements pour incrémentation/décrémentation
+        //addCartEventListenerToLink();
 
     }
 };
@@ -419,4 +432,5 @@ export const updateHeaderCart = async (cart = null) => {
         cart_price_value.textContent = formatPrice(0);
         cart_list.innerHTML = "<div class='empty-cart'>Votre panier est vide !</div>";
     }
+    //addCartEventListenerToLink()
 };
