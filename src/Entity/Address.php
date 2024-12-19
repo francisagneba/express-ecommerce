@@ -45,6 +45,9 @@ class Address
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address_type = null;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
@@ -183,5 +186,17 @@ class Address
             $this->city . " " .
             $this->code_postal . " " .
             $this->state . " ";
+    }
+
+    public function getAddressType(): ?string
+    {
+        return $this->address_type;
+    }
+
+    public function setAddressType(?string $address_type): static
+    {
+        $this->address_type = $address_type;
+
+        return $this;
     }
 }
