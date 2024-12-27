@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ecommerce  | Your account
+{% block title %}Jstore | Your account
 {% endblock %}
 
 {% block body %}
 
 	{% include "page_head/page_head.html.twig" with {'page_name': 'Account'} %}
-
 	<!-- START MAIN CONTENT -->
 	<div
 		class="main_content">
@@ -28,7 +27,8 @@
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">
-										<i class="ti-location-pin"></i>My Address</a>
+										<i class="ti-location-pin"></i>My
+																																																																																																																																																																																																																																																																																																																																																																																						                                    Address</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true">
@@ -43,7 +43,7 @@
 					</div>
 					<div class="col-lg-9 col-md-8">
 						<div class="tab-content dashboard_content">
-							<div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+							<div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
 								<div class="card">
 									<div class="card-header">
 										<h3>Dashboard</h3>
@@ -51,9 +51,11 @@
 									<div class="card-body">
 										<p>From your account dashboard. you can easily check &amp; view your
 											<a href="javascript:void(0);" onclick="$('#orders-tab').trigger('click')">recent orders</a>, manage your
-											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing addresses</a>
+											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing
+																																																																																																																																																																																																																																																																																																																																																																																																																								                                            addresses</a>
 											and
-											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and account details.</a>
+											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and
+																																																																																																																																																																																																																																																																																																																																																																																																																								                                            account details.</a>
 										</p>
 									</div>
 								</div>
@@ -66,9 +68,11 @@
 									<div class="card-body">
 										<p>From your account dashboard. you can easily check &amp; view your
 											<a href="javascript:void(0);" onclick="$('#orders-tab').trigger('click')">recent orders</a>, manage your
-											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing addresses</a>
+											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing
+																																																																																																																																																																																																																																																																																																																																																																																																																								                                            addresses</a>
 											and
-											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and account details.</a>
+											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and
+																																																																																																																																																																																																																																																																																																																																																																																																																								                                            account details.</a>
 										</p>
 										<button type="submit" class="btn btn-fill-out py-2" name="submit" value="Submit">Logout</button>
 									</div>
@@ -116,28 +120,101 @@
 									</div>
 								</div>
 							</div>
-							<div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+							<div class="tab-pane fade active show" id="address" role="tabpanel" aria-labelledby="address-tab">
 								<div class="row">
-									{% for address in addresses %}
-										<div class="col-lg-6">
-											<div class="card mb-3 mb-lg-0">
-												<div class="card-header">
-													<h3>{{ address.addressType }}
-														Address</h3>
+									<div class="action d-flex mb-2">
+										<a href="#" id="add_new_address" class="btn btn-fill-out">Add New</a>
+
+									</div>
+									<div class="col-lg-12 d-none" id="add_form">
+										<form action="">
+											<div class="row">
+												<div class="form-group col-md-12 mb-3">
+													<label>Address Type
+														<span class="required">*</span>
+													</label>
+													<select name="address_type" id="" class="form-control">
+														<option value="Billing">Billing</option>
+														<option value="Shipping">Shipping</option>
+													</select>
 												</div>
-												<div class="card-body">
-													<address>
-														{{ address.name }}<br>
-														{{ address.street }}<br>
-														{{ address.codePostal }}<br>
-														{{ address.city}}<br>
-														{{ address.state}}<br>
-														{{ address.moreDetails}}<br></address>
-													<a href="#" class="btn btn-fill-out">Edit</a>
+												<div class="form-group col-md-12 mb-3">
+													<label>Name
+														<span class="required">*</span>
+													</label>
+													<input required="" class="form-control" name="name" type="text">
+												</div>
+												<div class="form-group col-md-12 mb-3">
+													<label>Full Name
+														<span class="required">*</span>
+													</label>
+													<input required="" class="form-control" name="client_name" type="text">
+												</div>
+												<div class="form-group col-md-6 mb-3">
+													<label>Street
+														<span class="required">*</span>
+													</label>
+													<input required="" class="form-control" name="street" type="text">
+												</div>
+												<div class="form-group col-md-6 mb-3">
+													<label>Code Zip
+														<span class="required">*</span>
+													</label>
+													<input required="" class="form-control" name="code_postal" type="text">
+												</div>
+												<div class="form-group col-md-6 mb-3">
+													<label>City
+														<span class="required">*</span>
+													</label>
+													<input required="" class="form-control" name="city" type="text">
+												</div>
+												<div class="form-group col-md-6 mb-3">
+													<label>Country
+														<span class="required">*</span>
+													</label>
+													<input required="" class="form-control" name="state" type="text">
+												</div>
+												<div class="d-flex">
+													<button class="btn btn-fill-out">Save</button>
+												</div>
+											</div>
+										</form>
+									</div>
+									<div class="col-lg-12 d-block" id="address_details">
+										<div class="card">
+											<div class="card-header">
+												<h3>Addresses</h3>
+											</div>
+											<div class="card-body">
+												<div class="table-responsive address_content">
+													<table class="table">
+														<thead>
+															<tr>
+																<th>Id</th>
+																<th>Address</th>
+																<th>Actions</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for address in addresses %}
+																<tr>
+																	<td>{{address.id}}</td>
+																	<td>{{address.street}}
+																		{{address.codePostal}}
+																		{{address.city}}
+																		{{address.state}}</td>
+																	<td>
+																		<a href="#" class="btn btn-fill-out btn-sm edit_address">Edit</a>
+																		<a href="#" data-id="{{address.id}}" class="btn btn-fill-out btn-sm remove_address">Delete</a>
+																	</td>
+																</tr>
+															{% endfor %}
+														</tbody>
+													</table>
 												</div>
 											</div>
 										</div>
-									{% endfor %}
+									</div>
 								</div>
 							</div>
 							<div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
@@ -211,4 +288,114 @@
 
 	</div>
 	<!-- END MAIN CONTENT -->
+
+{% endblock %}
+{% block javascripts %}
+	<script>
+		// Sélection des éléments du DOM
+const addform = document.getElementById("add_form");
+const addAddressButton = document.getElementById("add_new_address");
+const addressDetails = document.getElementById("address_details");
+
+// Fonction pour afficher les adresses
+const displayAddress = (addresses) => {
+const tbody = document.querySelector(".address_content tbody");
+if (tbody) {
+tbody.innerHTML = ""; // Réinitialise le tableau
+addresses.forEach((address) => {
+tbody.innerHTML += `
+                    <tr>
+                        <td>#${
+address.id
+}</td>
+                        <td>${
+address.street
+} ${
+address.codePostal
+} ${
+address.city
+} ${
+address.state
+}</td>
+                        <td><a href="#" class="btn btn-fill-out btn-sm edit_address">Edit</a></td>
+                        <td><a href="#" data-id="${
+address.id
+}" class="btn btn-fill-out btn-sm remove_address">Delete</a></td>
+                    </tr>
+                `;
+});
+
+// Met à jour l'affichage
+addform.classList.add("d-none");
+addressDetails.classList.remove("d-none");
+addAddressButton.innerHTML = "Add New";
+
+// Rafraîchit les événements
+attachRemoveEvent();
+}
+};
+
+// Fonction pour attacher les événements "Remove Address"
+const attachRemoveEvent = () => {
+const removeAddressButtons = document.querySelectorAll(".remove_address");
+
+// Supprime d'abord tous les anciens événements (en clonant les nœuds)
+removeAddressButtons.forEach((btn) => {
+const newBtn = btn.cloneNode(true);
+btn.replaceWith(newBtn);
+
+// Ajoute un nouveau gestionnaire d'événements
+newBtn.addEventListener("click", async (event) => {
+event.preventDefault();
+const id = newBtn.dataset.id;
+
+if (id) {
+const response = await fetch (`/api/address/${id}`, {method: "DELETE"});
+const result = await response.json();
+
+if (result.isSuccess) {
+const addresses = result.data;
+displayAddress(addresses); // Rafraîchit les adresses
+}
+}
+});
+});
+};
+
+// Gestionnaire pour le bouton "Add New"
+addAddressButton.addEventListener("click", (event) => {
+event.preventDefault();
+if (addform.classList.contains("d-none")) {
+addform.classList.remove("d-none");
+addressDetails.classList.add("d-none");
+addAddressButton.innerHTML = "Cancel";
+} else {
+addform.classList.add("d-none");
+addressDetails.classList.remove("d-none");
+addAddressButton.innerHTML = "Add New";
+}
+});
+
+// Gestionnaire pour le formulaire d'ajout d'adresse
+addform.addEventListener("submit", async (event) => {
+event.preventDefault();
+const form = document.querySelector("#add_form form");
+const formData = new FormData(form);
+
+const response = await fetch("/api/address", {
+method: "POST",
+body: formData
+});
+
+const result = await response.json();
+
+if (result.isSuccess) {
+const addresses = result.data;
+displayAddress(addresses); // Rafraîchit les adresses après l'ajout
+}
+});
+
+// Initialisation
+attachRemoveEvent(); // Attache les événements au démarrage
+	</script>
 {% endblock %}
