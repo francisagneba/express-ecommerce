@@ -28,7 +28,7 @@
 								<li class="nav-item">
 									<a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">
 										<i class="ti-location-pin"></i>My
-																																																																																																																																																																																																																																																																																																																																																																																						                                    Address</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                    Address</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true">
@@ -52,10 +52,10 @@
 										<p>From your account dashboard. you can easily check &amp; view your
 											<a href="javascript:void(0);" onclick="$('#orders-tab').trigger('click')">recent orders</a>, manage your
 											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing
-																																																																																																																																																																																																																																																																																																																																																																																																																								                                            addresses</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            addresses</a>
 											and
 											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and
-																																																																																																																																																																																																																																																																																																																																																																																																																								                                            account details.</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            account details.</a>
 										</p>
 									</div>
 								</div>
@@ -69,10 +69,10 @@
 										<p>From your account dashboard. you can easily check &amp; view your
 											<a href="javascript:void(0);" onclick="$('#orders-tab').trigger('click')">recent orders</a>, manage your
 											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing
-																																																																																																																																																																																																																																																																																																																																																																																																																								                                            addresses</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            addresses</a>
 											and
 											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and
-																																																																																																																																																																																																																																																																																																																																																																																																																								                                            account details.</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            account details.</a>
 										</p>
 										<button type="submit" class="btn btn-fill-out py-2" name="submit" value="Submit">Logout</button>
 									</div>
@@ -172,8 +172,9 @@
 													<label>Country
 														<span class="required">*</span>
 													</label>
-													<input required="" class="form-control" name="state" type="text">
+													<select class="form-control" name="state" id="country"></select>
 												</div>
+
 												<div class="d-flex">
 													<button class="btn btn-fill-out">Save</button>
 												</div>
@@ -204,7 +205,9 @@
 																		{{address.city}}
 																		{{address.state}}</td>
 																	<td>
-																		<a href="#" class="btn btn-fill-out btn-sm edit_address">Edit</a>
+																		<a href="#" data-id="{{address.id}}" data-address_type="{{address.addressType}}" data-client_name="{{address.clientName}}" data-name="{{address.name}}" data-street="{{address.street}}" data-code_postal="{{address.codePostal}}" data-city="{{address.city}}" data-state="{{address.state}}" class="btn btn-fill-out btn-sm edit_address">
+																			Edit
+																		</a>
 																		<a href="#" data-id="{{address.id}}" class="btn btn-fill-out btn-sm remove_address">Delete</a>
 																	</td>
 																</tr>
@@ -292,12 +295,16 @@
 {% endblock %}
 {% block javascripts %}
 	<script>
-		// Sélection des éléments du DOM
+		document.addEventListener("DOMContentLoaded", () => {
 const addform = document.getElementById("add_form");
+const form = document.querySelector("#add_form form");
 const addAddressButton = document.getElementById("add_new_address");
 const addressDetails = document.getElementById("address_details");
+const countrySelect = document.getElementById("country");
+let isUpdating = false;
+let currentAddress = null;
 
-// Fonction pour afficher les adresses
+// Affichage des adresses
 const displayAddress = (addresses) => {
 const tbody = document.querySelector(".address_content tbody");
 if (tbody) {
@@ -317,85 +324,178 @@ address.city
 } ${
 address.state
 }</td>
-                        <td><a href="#" class="btn btn-fill-out btn-sm edit_address">Edit</a></td>
-                        <td><a href="#" data-id="${
+                        <td>
+                            <a href="#" 
+                                data-id="${
 address.id
-}" class="btn btn-fill-out btn-sm remove_address">Delete</a></td>
+}" 
+                                data-address_type="${
+address.address_type
+}" 
+                                data-name="${
+address.name
+}" 
+                                data-street="${
+address.street
+}" 
+                                data-codepostal="${
+address.codePostal
+}" 
+                                data-city="${
+address.city
+}" 
+                                data-state="${
+address.state
+}" 
+                                class="btn btn-fill-out btn-sm edit_address">Edit</a>
+                            <a href="#" data-id="${
+address.id
+}" class="btn btn-fill-out btn-sm remove_address">Delete</a>
+                        </td>
                     </tr>
                 `;
 });
 
-// Met à jour l'affichage
-addform.classList.add("d-none");
-addressDetails.classList.remove("d-none");
-addAddressButton.innerHTML = "Add New";
-
-// Rafraîchit les événements
+attachEditEvent();
 attachRemoveEvent();
 }
 };
 
-// Fonction pour attacher les événements "Remove Address"
+// Charger les pays
+const initState = async () => {
+try {
+const response = await fetch("/assets/data/countries.json");
+const countries = await response.json();
+
+countrySelect.innerHTML = '<option value="">Select a country</option>'; // Valeur par défaut
+
+countries.forEach((country) => {
+countrySelect.innerHTML += `<option value="${
+country.code
+}">${
+country.name
+}</option>`;
+});
+} catch (error) {
+console.error("Erreur lors du chargement des pays :", error);
+}
+};
+
+// Attacher les événements "Remove Address"
 const attachRemoveEvent = () => {
-const removeAddressButtons = document.querySelectorAll(".remove_address");
+document.querySelectorAll(".remove_address").forEach((btn) => {
+btn.replaceWith(btn.cloneNode(true)); // Supprime les anciens événements
+});
 
-// Supprime d'abord tous les anciens événements (en clonant les nœuds)
-removeAddressButtons.forEach((btn) => {
-const newBtn = btn.cloneNode(true);
-btn.replaceWith(newBtn);
-
-// Ajoute un nouveau gestionnaire d'événements
-newBtn.addEventListener("click", async (event) => {
+document.querySelectorAll(".remove_address").forEach((btn) => {
+btn.addEventListener("click", async (event) => {
 event.preventDefault();
-const id = newBtn.dataset.id;
+const id = btn.dataset.id;
 
 if (id) {
 const response = await fetch (`/api/address/${id}`, {method: "DELETE"});
 const result = await response.json();
 
 if (result.isSuccess) {
-const addresses = result.data;
-displayAddress(addresses); // Rafraîchit les adresses
+displayAddress(result.data); // Rafraîchit les adresses
 }
 }
 });
 });
 };
 
-// Gestionnaire pour le bouton "Add New"
+// Attacher les événements "Edit Address"
+const attachEditEvent = () => {
+document.querySelectorAll(".edit_address").forEach((btn) => {
+btn.replaceWith(btn.cloneNode(true)); // Supprime les anciens événements
+});
+
+document.querySelectorAll(".edit_address").forEach((btn) => {
+btn.addEventListener("click", updateAddress);
+});
+};
+
+// Gestion du bouton "Add New"
 addAddressButton.addEventListener("click", (event) => {
 event.preventDefault();
-if (addform.classList.contains("d-none")) {
-addform.classList.remove("d-none");
-addressDetails.classList.add("d-none");
-addAddressButton.innerHTML = "Cancel";
-} else {
-addform.classList.add("d-none");
-addressDetails.classList.remove("d-none");
-addAddressButton.innerHTML = "Add New";
-}
+addform.classList.toggle("d-none");
+addressDetails.classList.toggle("d-none");
+addAddressButton.textContent = addform.classList.contains("d-none") ? "Add New" : "Cancel";
 });
 
-// Gestionnaire pour le formulaire d'ajout d'adresse
-addform.addEventListener("submit", async (event) => {
+// Gestion de l'envoi du formulaire d'ajout d'adresse
+form.addEventListener("submit", async (event) => {
 event.preventDefault();
-const form = document.querySelector("#add_form form");
-const formData = new FormData(form);
+console.log("Submit event triggered!");
 
-const response = await fetch("/api/address", {
-method: "POST",
-body: formData
+const formData = new FormData(form);
+let url = "/api/address";
+let method = "POST";
+let body = JSON.stringify(Object.fromEntries(formData));
+
+if (isUpdating) {
+url = `/api/address/${
+currentAddress.id
+}`;
+method = "PUT";
+}
+
+try {
+const response = await fetch(url, {
+method: method,
+headers: {
+"Content-Type": "application/json"
+},
+body: body
 });
 
-const result = await response.json();
+if (! response.ok) {
+throw new Error (`HTTP error! Status: ${
+response.status
+}`);
+}
+
+const result = await response.json(); // Assurer que result est bien défini
 
 if (result.isSuccess) {
-const addresses = result.data;
-displayAddress(addresses); // Rafraîchit les adresses après l'ajout
+displayAddress(result.data);
+addAddressButton.click();
+form.reset();
+isUpdating = false;
+currentAddress = null;
+form.querySelector("button").textContent = "Save";
+} else {
+console.error("Erreur API :", result.message);
+}
+
+} catch (error) {
+console.error("Erreur lors de la requête :", error);
 }
 });
 
+
+const updateAddress = (event) => {
+event.preventDefault();
+isUpdating = true;
+currentAddress = Object.assign({}, event.target.dataset);
+
+addAddressButton.click(); // Ouvre le formulaire
+
+form.querySelector("[name='name']").value = currentAddress.name;
+form.querySelector("[name='client_name']").value = currentAddress.client_name || "";
+form.querySelector("[name='address_type']").value = currentAddress.address_type || "";
+form.querySelector("[name='street']").value = currentAddress.street;
+form.querySelector("[name='city']").value = currentAddress.city;
+form.querySelector("[name='code_postal']").value = currentAddress.code_postal;
+form.querySelector("[name='state']").value = currentAddress.state;
+
+form.querySelector("button").textContent = "Update";
+};
+
 // Initialisation
-attachRemoveEvent(); // Attache les événements au démarrage
+initState();
+attachRemoveEvent();
+attachEditEvent();
+});
 	</script>
 {% endblock %}
