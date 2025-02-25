@@ -37,7 +37,23 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-6"></div>
+					<div class="col-md-6">
+						<div class="border p-3 p-md-4">
+							<div class="heading_s1 mb-3">
+								<h6>Choose your carrier</h6>
+							</div>
+							<form action="">
+								<select name="carrier" id="carrier" class="form-control">
+									{% for carrier in carriers %}
+										<option value="{{ carrier.id }}" {% if cart.data.carrier_id == carrier.id %} selected {% endif %}>
+											{{ carrier.name }}
+											({{ (carrier.price / 100) | format_currency("EUR") }})
+										</option>
+									{% endfor %}
+								</select>
+							</form>
+						</div>
+					</div>
 					<div class="col-md-6">
 						<div class="border p-3 p-md-4">
 							<div class="heading_s1 mb-3">

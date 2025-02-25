@@ -2,23 +2,21 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Category;
+use App\Entity\Carrier;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
-class CategoryCrudController extends AbstractCrudController
+class CarrierCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Category::class;
+        return Carrier::class;
     }
 
     public function configureActions(Actions $actions): Actions
@@ -35,14 +33,8 @@ class CategoryCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            SlugField::new('slug')->setTargetFieldName('name'),
-            TextEditorField::new('description')->formatValue(fn($value) => $value ?? ''),
-            BooleanField::new('isMega'),
-            ImageField::new('imageUrl')
-                ->setBasePath("assets/images/categories")
-                ->setUploadDir("/public/assets/images/categories")
-                ->setUploadedFileNamePattern('[randomhash].[extension]')
-                ->setRequired($pageName === Crud::PAGE_NEW),
+            TextEditorField::new('description')->formatValue(fn($value) => $value ?? ''), // Remplace null par une chaîne vide
+            MoneyField::new('price')->setCurrency("EUR"),
         ];
     }
 }

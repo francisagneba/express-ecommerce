@@ -45,7 +45,7 @@ class AddressCrudController extends AbstractCrudController
             TextField::new('city'),
             CountryField::new('state'),
             AssociationField::new('user'),
-            TextEditorField::new('more_details'),
+            TextEditorField::new('more_details')->formatValue(fn($value) => $value ?? ''),
         ];
     }
 }

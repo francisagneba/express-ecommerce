@@ -2,25 +2,35 @@
 
 namespace App\Controller;
 
+use App\Repository\CarrierRepository;
 use App\Services\CartServices;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CartController extends AbstractController
 {
     private CartServices $cartServices;
+    private CarrierRepository $carrierRipo;
 
-    public function __construct(CartServices $cartServices)
+    public function __construct(CartServices $cartServices, CarrierRepository $carrierRipo)
     {
         $this->cartServices = $cartServices;
+        $this->carrierRipo = $carrierRipo;
     }
 
     #[Route('/cart', name: 'app_cart')]
-    public function index(Request $request): Response
+    public function index(Request $request, SessionInterface $session): Response
     {
+        if (!$session->isStarted()) {
+            $session->start();
+        }
+
         $cart = $this->cartServices->getFullCart();
+
+        $carriers = $this->carrierRipo->findAll();
 
         if (empty($cart['items'])) {
             if ($request->isXmlHttpRequest()) {
@@ -33,12 +43,13 @@ class CartController extends AbstractController
 
         return $this->render('cart/index.html.twig', [
             'cart' => $cart,
+            'carriers' => $carriers,
             'cart_json' => $cart_json
         ]);
     }
 
     #[Route('/cart/add/{id}/{count}', name: 'app_add_to_cart')]
-    public function addToCart(int $id, int $count = 1, Request $request): Response
+    public function addToCart(int $id, Request $request, int $count = 1): Response
     {
         try {
             if ($id <= 0 || $count <= 0) {

@@ -249,7 +249,7 @@ export const displayCart = (cart = null) => {
     updateHeaderCart(cart);
 
     if (!cart) return;
-
+    console.log(cart);
     let tbody = document.querySelector('.shop_cart_table tbody');
     let cart_total_amounts = document.querySelectorAll('.cart_total_amount1');
     let cart_total_amountss = document.querySelectorAll('.cart_total_amount2');
@@ -305,17 +305,17 @@ export const displayCart = (cart = null) => {
         // Mise à jour du total HT et TTC dans l'affichage
         cart_total_amounts.forEach(cart_total_amount => {
             cart_total_amount.innerHTML = `
-                <span> ${formatPrice(totalHT / 100)}</span>            
+                <span>${formatPrice(totalHT / 100)}</span>            
             `;
         });
         cart_total_amountss.forEach(cart_total_amount => {
             cart_total_amount.innerHTML = `
-                <span></span>
+                <span>${formatPrice(cart.data.carrier_price / 100)}</span>
             `;
         });
         cart_total_amountsss.forEach(cart_total_amount => {
             cart_total_amount.innerHTML = `
-                <span> ${formatPrice(totalTTC / 100)}</span>
+                <span>${formatPrice((totalTTC + cart.data.carrier_price) / 100)}</span>
             `;
         });
 
@@ -372,41 +372,39 @@ export const displayWishlist = (wishlist = null) => {
     addWiwhListEventListenerToLink()
 };
 
-
 export const updateHeaderCart = async (cart = null) => {
     let cart_count = document.querySelector(".cart_count");
     let cart_list = document.querySelector(".cart_list");
     let cart_price_value = document.querySelector(".cart_price_value");
 
+    // Vérification que les éléments existent
+    if (!cart_count || !cart_list || !cart_price_value) {
+        console.warn("Un ou plusieurs éléments du header cart sont introuvables.");
+        return;
+    }
+
     if (!cart) {
-        // Récupération des données du panier depuis l'API
         cart = await fetchData("/cart/get");
     }
 
-    console.log('Cart:', cart); // Debug : afficher le panier complet
-
     if (cart && cart.items && cart.items.length > 0) {
-        // Mise à jour du nombre d'articles dans le header
         cart_count.textContent = cart.items.reduce((total, item) => total + item.quantity, 0);
 
-        // Calcul du sous-total
         let subTotal = cart.items.reduce((total, item) => {
-            let productPrice = item.product.soldePrice || 0;
+            let productPrice = item.product?.soldePrice || 0;
             return total + productPrice * item.quantity;
         }, 0);
 
-        // Mise à jour du sous-total
         cart_price_value.textContent = formatPrice(subTotal / 100);
 
-        let content = "";
-        cart.items.forEach((item) => {
+        let content = cart.items.map(item => {
             let product = item.product || {};
             let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
             let productName = product.name || 'Unknown Product';
             let productPrice = product.soldePrice || 0;
             let quantity = item.quantity || 0;
 
-            content += `
+            return `
             <div class="cart-item">
                 <div class="cart-item-image">
                     <img src="/assets/images/products/${productImage}" alt="${productName}">
@@ -421,16 +419,13 @@ export const updateHeaderCart = async (cart = null) => {
                         </a>
                     </div>
                 </div>
-            </div>
-            `;
-        });
+            </div>`;
+        }).join("");
 
         cart_list.innerHTML = content;
     } else {
-        // Si le panier est vide
         cart_count.textContent = "0";
         cart_price_value.textContent = formatPrice(0);
         cart_list.innerHTML = "<div class='empty-cart'>Votre panier est vide !</div>";
     }
-    //addCartEventListenerToLink()
 };
