@@ -32,6 +32,15 @@ class CartController extends AbstractController
 
         $carriers = $this->carrierRipo->findAll();
 
+        foreach ($carriers as $key => $carrier) {
+            $carriers[$key] = [
+                "id" => $carrier->getId(),
+                "name" => $carrier->getName(),
+                "description" => $carrier->getDescription(),
+                "price" => $carrier->getPrice(),
+            ];
+        }
+
         if (empty($cart['items'])) {
             if ($request->isXmlHttpRequest()) {
                 return $this->json(['error' => 'Cart is empty'], Response::HTTP_BAD_REQUEST);
@@ -40,11 +49,13 @@ class CartController extends AbstractController
         }
 
         $cart_json = json_encode($cart);
+        $carriers_json = json_encode($carriers);
 
         return $this->render('cart/index.html.twig', [
             'cart' => $cart,
             'carriers' => $carriers,
-            'cart_json' => $cart_json
+            'cart_json' => $cart_json,
+            'carriers_json' => $carriers_json
         ]);
     }
 
