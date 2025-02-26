@@ -42,8 +42,8 @@
 							<div class="heading_s1 mb-3">
 								<h6>Choose your carrier</h6>
 							</div>
-							<form action="">
-								<select name="carrier" id="carrier" class="form-control">
+							<form action="/cart/carrier" method="post">
+								<select name="carrierId" id="carrier" class="form-control">
 									{% for carrier in carriers %}
 										<option value="{{ carrier.id }}" {% if cart.data.carrier_id == carrier.id %} selected {% endif %}>
 											{{ carrier.name }}
@@ -51,6 +51,7 @@
 										</option>
 									{% endfor %}
 								</select>
+								<button class="btn btn-fill-out mt-1">Update Carrier</button>
 							</form>
 						</div>
 					</div>

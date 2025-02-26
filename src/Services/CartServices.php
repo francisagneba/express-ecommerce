@@ -29,7 +29,7 @@ class CartServices
             throw new \Exception("Product not found.");
         }
 
-        $cart = $this->getCart(); // Récupérer le panier
+        $cart = $this->get('cart'); // Récupérer le panier
 
         if (isset($cart[$id])) {
             $cart[$id] += $count;
@@ -37,12 +37,12 @@ class CartServices
             $cart[$id] = $count;
         }
 
-        $this->updateCart($cart); // Mettre à jour le panier
+        $this->update("cart", $cart); // Mettre à jour le panier
     }
 
     public function deleteFromCart(int $id): void
     {
-        $cart = $this->getCart();
+        $cart = $this->get('cart');
 
         if (isset($cart[$id])) {
             if ($cart[$id] > 1) {
@@ -50,39 +50,59 @@ class CartServices
             } else {
                 unset($cart[$id]);
             }
-            $this->updateCart($cart);
+            $this->update("cart", $cart);
         }
     }
 
     public function deleteAllToCart(int $id): void
     {
-        $cart = $this->getCart();
+        $cart = $this->get('cart');
 
         if (isset($cart[$id])) {
             unset($cart[$id]);
-            $this->updateCart($cart);
+            $this->update("cart", $cart);
         }
     }
 
-    public function updateCart(array $cart): void
+    public function update($key, array $cart): void
     {
-        $this->session->set('cart', $cart);
+        $this->session->set($key, $cart);
         $this->session->set('cartData', $this->getFullCart());
     }
 
-    public function getCart(): array
+    public function updateCarrier($carrier): void
     {
-        return $this->session->get('cart', []);
+        $this->update("carrier", $carrier);
+    }
+
+    public function get($key): array
+    {
+        return $this->session->get($key, []);
     }
 
     public function getFullCart(): array
     {
-        $cart = $this->getCart();
+        $cart = $this->get('cart');
         $fullCart = ['items' => []];
         $quantity_cart = 0;
         $subTotal = 0.0;
-        //dd($this->carrierRipo->findAll()[0]);
-        $carrier = $this->carrierRipo->findAll()[0];
+
+        $carrier = $this->get("carrier");
+
+        if (!$carrier) {
+            $carrierEntity = $this->carrierRipo->findAll()[0] ?? null;
+
+            if ($carrierEntity) {
+                $carrier = [
+                    "id" => $carrierEntity->getId(),
+                    "name" => $carrierEntity->getName(),
+                    "description" => $carrierEntity->getDescription(),
+                    "price" => $carrierEntity->getPrice(),
+                ];
+                $this->update("carrier", $carrier);
+            }
+        }
+
 
         foreach ($cart as $id => $quantity) {
             $product = $this->repoProduct->find($id);
@@ -112,9 +132,10 @@ class CartServices
             'subTotalHT' => (float) $subTotal,
             'subTotalTTC' => (float) ($subTotal + ($subTotal * $this->tva)),
             'quantity' => $quantity_cart,
-            'carrier_id' => $carrier ? $carrier->getId() : null, // Vérifie que $carrier existe
-            'carrier_name' => $carrier ? $carrier->getName() : null,
-            'carrier_price' => $carrier ? $carrier->getPrice() : null,
+            'carrier_id' => is_array($carrier) ? $carrier['id'] : ($carrier ? $carrier->getId() : null),
+            'carrier_name' => is_array($carrier) ? $carrier['name'] : ($carrier ? $carrier->getName() : null),
+            'carrier_price' => is_array($carrier) ? $carrier['price'] : ($carrier ? $carrier->getPrice() : null),
+
         ];
 
         return $fullCart;

@@ -134,4 +134,26 @@ class CartController extends AbstractController
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    #[Route('/cart/carrier', name: 'app_update_cart_carrier', methods: ["POST"])]
+    public function updateCartCarrier(Request $req): Response
+    {
+        $id = $req->getPayload()->get("carrierId");
+        //dd($id);
+        $carrier = $this->carrierRipo->findOneById($id);
+
+        if (!$carrier) {
+            return $this->redirectToRoute("app_home");
+        }
+        $this->cartServices->update("carrier", [
+            "id" => $carrier->getId(),
+            "name" => $carrier->getName(),
+            "description" => $carrier->getDescription(),
+            "price" => $carrier->getPrice(),
+        ]);
+
+        return $this->redirectToRoute("app_cart");
+
+        //return $this->json($cart);
+    }
 }
