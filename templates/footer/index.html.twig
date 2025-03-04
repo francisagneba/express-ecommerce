@@ -6,32 +6,46 @@
 					<div class="widget">
 						<div class="footer_logo">
 							<a href="/">
-								<h2>{{ app.session.get("setting").websiteName }}</h2>
+								{% if app.session.get("setting") is not null %}
+									<h2>{{ app.session.get("setting").websiteName }}</h2>
+								{% else %}
+									<h2>Nom du site par défaut</h2>
+								{% endif %}
 							</a>
 						</div>
 						<p>
-							{{ app.session.get("setting").description }}
+							{% if app.session.get("setting") is not null %}
+								<p>{{ app.session.get("setting").description }}</p>
+							{% else %}
+								<p>Description par défaut du site.</p>
+							{% endif %}
 						</p>
 					</div>
 					<div class="widget">
 						<ul class="social_icons social_white">
-							<li>
-								<a target="_blank" href="{{ app.session.get("setting").facebookLink }}">
-									<i class="ion-social-facebook"></i>
-								</a>
-							</li>
+							{% if app.session.get("setting") is not null and app.session.get("setting").facebookLink is not empty %}
+								<li>
+									<a target="_blank" href="{{ app.session.get('setting').facebookLink }}">
+										<i class="ion-social-facebook"></i>
+									</a>
+								</li>
+							{% endif %}
 							<li></li>
 							<li></li>
-							<li>
-								<a target="_blank" href="{{ app.session.get("setting").youtubeLink }}">
-									<i class="ion-social-youtube-outline"></i>
-								</a>
-							</li>
-							<li>
-								<a target="_blank" href="{{ app.session.get("setting").instagramLink }}">
-									<i class="ion-social-instagram-outline"></i>
-								</a>
-							</li>
+							{% if app.session.get("setting") is not null and app.session.get("setting").youtubeLink is not empty %}
+								<li>
+									<a target="_blank" href="{{ app.session.get('setting').youtubeLink }}">
+										<i class="ion-social-youtube-outline"></i>
+									</a>
+								</li>
+							{% endif %}
+							{% if app.session.get("setting") is not null and app.session.get("setting").instagramLink is not empty %}
+								<li>
+									<a target="_blank" href="{{ app.session.get('setting').instagramLink }}">
+										<i class="ion-social-instagram-outline"></i>
+									</a>
+								</li>
+							{% endif %}
 						</ul>
 					</div>
 				</div>
@@ -45,17 +59,17 @@
 								</li>
 							{% endfor %}
 							{# <li>
-																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,nos-services-jstore" href="/page/nos-services-jstore">Nos services</a>
-																																																																																																																																																																																																																																							</li>
-																																																																																																																																																																																																																																							<li>
-																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,contactez-nous-category" href="/page/contactez-nous-category">Contactez-Nous</a>
-																																																																																																																																																																																																																																							</li>
-																																																																																																																																																																																																																																							<li>
-																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,nos-partenaires-mudey" href="/page/nos-partenaires-mudey">Nos partenaires</a>
-																																																																																																																																																																																																																																							</li>
-																																																																																																																																																																																																																																							<li>
-																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,mentions-lgales-espero" href="/page/mentions-lgales-espero">Mentions légales</a>
-																																																																																																																																																																																																																																							</li> #}
+																																																																																																																																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,nos-services-jstore" href="/page/nos-services-jstore">Nos services</a>
+																																																																																																																																																																																																																																																																																																																																																							</li>
+																																																																																																																																																																																																																																																																																																																																																							<li>
+																																																																																																																																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,contactez-nous-category" href="/page/contactez-nous-category">Contactez-Nous</a>
+																																																																																																																																																																																																																																																																																																																																																							</li>
+																																																																																																																																																																																																																																																																																																																																																							<li>
+																																																																																																																																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,nos-partenaires-mudey" href="/page/nos-partenaires-mudey">Nos partenaires</a>
+																																																																																																																																																																																																																																																																																																																																																							</li>
+																																																																																																																																																																																																																																																																																																																																																							<li>
+																																																																																																																																																																																																																																																																																																																																																								<a ng-reflect-router-link="/page,mentions-lgales-espero" href="/page/mentions-lgales-espero">Mentions légales</a>
+																																																																																																																																																																																																																																																																																																																																																							</li> #}
 						</ul>
 					</div>
 				</div>
@@ -104,22 +118,46 @@
 					<div class="widget">
 						<h6 class="widget_title">Contact Info</h6>
 						<ul class="contact_info contact_info_light">
-							<li>
-								<i class="ti-location-pin"></i>
-								<p>
-									{{ app.session.get("setting").street }}
-									{{ app.session.get("setting").codePostal }}
-									{{ app.session.get("setting").city }}
-								</p>
-							</li>
-							<li>
-								<i class="ti-email"></i>
-								<a href="mailto:francis.agneba@gmail.com">{{ app.session.get("setting").email }}</a>
-							</li>
-							<li>
-								<i class="ti-mobile"></i>
-								<p>+{{ app.session.get("setting").phone }}</p>
-							</li>
+							{% if app.session.get("setting") is not null %}
+								<li>
+									<i class="ti-location-pin"></i>
+									<p>
+										{{ app.session.get("setting").street }}<br>
+										{{ app.session.get("setting").codePostal }}<br>
+										{{ app.session.get("setting").city }}
+									</p>
+								</li>
+							{% else %}
+								<li>
+									<i class="ti-location-pin"></i>
+									<p>Adresse non disponible</p>
+								</li>
+							{% endif %}
+
+							{% if app.session.get("setting") is not null and app.session.get("setting").email is not empty %}
+								<li>
+									<i class="ti-email"></i>
+									<a href="mailto:{{ app.session.get('setting').email }}">{{ app.session.get("setting").email }}</a>
+								</li>
+							{% else %}
+								<li>
+									<i class="ti-email"></i>
+									<p>Email non disponible</p>
+								</li>
+							{% endif %}
+
+							{% if app.session.get("setting") is not null and app.session.get("setting").phone is not empty %}
+								<li>
+									<i class="ti-mobile"></i>
+									<p>+{{ app.session.get("setting").phone }}</p>
+								</li>
+							{% else %}
+								<li>
+									<i class="ti-mobile"></i>
+									<p>Téléphone non disponible</p>
+								</li>
+							{% endif %}
+
 						</ul>
 					</div>
 				</div>
@@ -130,9 +168,17 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6">
-					<p class="mb-md-0 text-center text-md-start">
-						{{ app.session.get("setting").copyright }}
-					</p>
+					{% if app.session.get("setting") is not null and app.session.get("setting").copyright is not empty %}
+						<p class="mb-md-0 text-center text-md-start">
+							{{ app.session.get("setting").copyright }}
+						</p>
+					{% else %}
+						<p class="mb-md-0 text-center text-md-start">
+							©
+							{{ "now"|date("Y") }}
+							- Tous droits réservés
+						</p>
+					{% endif %}
 				</div>
 				<div class="col-md-6">
 					<ul class="footer_payment text-center text-lg-end d-flex gap-2 justify-content-end">

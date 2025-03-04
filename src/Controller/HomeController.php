@@ -41,7 +41,11 @@ class HomeController extends AbstractController
         $categories = $categoryRepo->findBy(['isMega' => true]);
 
         //dd($data);
-        $session->set("setting", $data[0]);
+        if (!empty($data)) {
+            $session->set("setting", $data[0]);
+        } else {
+            $session->set("setting", null);
+        }
 
         $headerPages = $pageRepo->findBy(['isHead' => true]);
         $footerPages = $pageRepo->findBy(['isFoot' => true]);
@@ -106,7 +110,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/error}', name: 'app_error')]
+    #[Route('/error', name: 'app_error')]
     public function errorPage()
     {
 
