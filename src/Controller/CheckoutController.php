@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Services\CartServices;
+use App\Repository\AddressRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,7 +21,7 @@ class CheckoutController extends AbstractController
     }
 
     #[Route('/checkout', name: 'app_checkout')]
-    public function index(): Response
+    public function index(AddressRepository $addressRepository): Response
     {
 
         $cart = $this->cartServices->getFullCart();
@@ -36,11 +37,14 @@ class CheckoutController extends AbstractController
             return $this->redirectToRoute("app_login");
         }
 
+        $addresses = $addressRepository->findByUser($user);
+
         // $cart_json = json_encode($cart);
 
         return $this->render('checkout/index.html.twig', [
             'controller_name' => 'CheckoutController',
             'cart' => $cart,
+            'addresses' => $addresses,
         ]);
     }
 }

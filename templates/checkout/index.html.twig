@@ -13,20 +13,48 @@
 				</div>
 				<div
 					class="row">{# <div class="col-12">
-												<div class="medium_divider"></div>
-												<div class="divider center_icon">
-													<i class="linearicons-credit-card"></i>
-												</div>
-												<div class="medium_divider"></div>
-											</div> #}
+																																																																																																																																																																																																																																																																																																																		<div class="medium_divider"></div>
+																																																																																																																																																																																																																																																																																																																		<div class="divider center_icon">
+																																																																																																																																																																																																																																																																																																																			<i class="linearicons-credit-card"></i>
+																																																																																																																																																																																																																																																																																																																		</div>
+																																																																																																																																																																																																																																																																																																																		<div class="medium_divider"></div>
+																																																																																																																																																																																																																																																																																																																	</div> #}
 				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="heading_s1">
 							<h4>Billing Address</h4>
+							<select name="billing_address" class="form-control">
+								<option value="">--- Choose billing address ---</option>
+								{% for address in addresses %}
+									<option value="{{ address.id }}">
+										{{ address.name }}
+										({{ address.street }}
+										{{ address.codepostal }}
+										{{ address.city }}
+										{{ address.state }})
+									</option>
+								{% endfor %}
+							</select>
 						</div>
 						<div class="heading_s1">
 							<h4>Shipping Address</h4>
+							<select name="shipping_address" class="form-control">
+								<option value="">--- Choose shipping address ---</option>
+								{% for address in addresses %}
+									<option value="{{ address.id }}">
+										{{ address.name }}
+										({{ address.street }}
+										{{ address.codepostal }}
+										{{ address.city }}
+										{{ address.state }})
+									</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="heading_s1">
+							<h4>Comments</h4>
+							<textarea class="form-control" name="Comments" id="" cols="30" rows="10"></textarea>
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -45,7 +73,9 @@
 									<tbody>
 										{% for item in cart.items %}
 											<tr>
-												<td>{{ item.product.name }}
+												<td>
+													<img src="/assets/images/products/{{item.product.imageUrls[0]}}" width="30" height="30" alt="">
+													{{ item.product.name }}
 													<span class="product-qty">x
 														{{ item.quantity}}</span>
 												</td>
@@ -69,14 +99,77 @@
 									</tfoot>
 								</table>
 							</div>
-							<div class="payment_method"></div>
-							<a href="#" class="btn btn-fill-out btn-block">
-								Pay now ({{ ((cart.data.subTotalTTC + cart.data.carrier_price) / 100) | format_currency('EUR') }})
-							</a>
+							<div class="payment_method d-none">
+								<a href="#" class="btn btn-fill-out btn-block">
+									Pay now ({{ ((cart.data.subTotalTTC + cart.data.carrier_price) / 100) | format_currency('EUR') }})
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+let shipping_address = "";
+let billing_address = "";
+let displayPayBtn = false;
+let comment = "";
+
+const billing_address_select = document.querySelector('select[name="billing_address"]');
+const shipping_address_select = document.querySelector('select[name="shipping_address"]');
+const comments_textarea = document.querySelector('textarea');
+const payBtn = document.querySelector('.payment_method'); // ⚠️ Vérifier si payBtn est bien trouvé
+
+console.log("payBtn:", payBtn); // 🔍 Debugging
+
+const updateButton = () => {
+displayPayBtn = !! billing_address && !! shipping_address;
+console.log("Afficher bouton:", displayPayBtn);
+
+if (payBtn) {
+if (displayPayBtn) {
+payBtn.classList.remove("d-none");
+console.log("✅ Bouton affiché !");
+} else {
+payBtn.classList.add("d-none");
+console.log("❌ Bouton caché !");
+}
+} else {
+console.error("⚠️ ERREUR : payBtn est introuvable !");
+}
+};
+
+if (billing_address_select) {
+billing_address_select.addEventListener("change", (event) => {
+billing_address = event.target.value;
+console.log("Nouvelle adresse de facturation:", billing_address);
+updateButton();
+});
+} else {
+console.error("❌ ERREUR : Élément 'billing_address_select' introuvable !");
+}
+
+if (shipping_address_select) {
+shipping_address_select.addEventListener("change", (event) => {
+shipping_address = event.target.value;
+console.log("Nouvelle adresse de livraison:", shipping_address);
+updateButton();
+});
+} else {
+console.error("❌ ERREUR : Élément 'shipping_address_select' introuvable !");
+}
+
+if (comments_textarea) {
+comments_textarea.addEventListener("change", (event) => {
+comment = event.target.value;
+updateButton();
+});
+}
+});
+	</script>
 {% endblock %}
