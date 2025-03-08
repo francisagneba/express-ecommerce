@@ -131,12 +131,16 @@ class CartServices
         $fullCart['data'] = [
             'subTotalHT' => (float) $subTotal,
             'subTotalTTC' => (float) ($subTotal + ($subTotal * $this->tva)),
+            'subTotalWithCarrier' => (float) (($subTotal + ($subTotal * $this->tva) +  $carrier['price']) / 100),
             'quantity' => $quantity_cart,
             'carrier_id' => is_array($carrier) ? $carrier['id'] : ($carrier ? $carrier->getId() : null),
             'carrier_name' => is_array($carrier) ? $carrier['name'] : ($carrier ? $carrier->getName() : null),
             'carrier_price' => is_array($carrier) ? $carrier['price'] : ($carrier ? $carrier->getPrice() : null),
 
         ];
+
+        // dd($fullCart['data']['subTotalWithCarrier']);
+
 
         return $fullCart;
     }
