@@ -9,7 +9,7 @@
 
 {% block body %}
 	{% include "page_head/page_head.html.twig" with {'page_name': 'Checkout'} %}
-	<div class="main_content" data-cart="{{cart_json}}" data-public_key="{{public_key}}">
+	<div class="main_content" data-cart="{{cart_json}}" data-public_key="{{public_key}}" data-orderid="{{orderId}}">
 		<div class="section">
 			<div class="container">
 				<div class="row">
@@ -193,6 +193,7 @@ updateButton();
 const main_content = document.querySelector(".main_content");
 const cart = JSON.parse(main_content ?. dataset ?. cart || "[]");
 const public_key = main_content ?. dataset ?. public_key || "";
+const orderid = main_content ?. dataset ?. orderid || "";
 
 // This is your test publishable API key.
 const stripe = Stripe(public_key);

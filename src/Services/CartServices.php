@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Entity\Product;
+use App\Entity\Order;
+use App\Entity\OrderDetails;
 use App\Repository\CarrierRepository;
+use App\Repository\OrderDetailsRepository;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -14,8 +17,9 @@ class CartServices
     private $repoProduct;
     private $carrierRipo;
     private $tva = 0.2;
+    private $taxe;
 
-    public function __construct(RequestStack $requestStack, ProductRepository $repoProduct, CarrierRepository $carrierRepo)
+    public function __construct(RequestStack $requestStack, ProductRepository $repoProduct, CarrierRepository $carrierRepo, OrderDetailsRepository $orderDetailsRepo)
     {
         $this->session = $requestStack->getSession(); // Obtenir la session à partir de RequestStack
         $this->repoProduct = $repoProduct;
@@ -113,6 +117,7 @@ class CartServices
 
                 $fullCart['items'][] = [
                     "quantity" => $quantity,
+                    'taxe' => 0,
                     "sub_total" => $subTotalPrice,
                     "product" => [
                         'id' => $product->getId(),
@@ -125,17 +130,28 @@ class CartServices
                 ];
                 $quantity_cart += $quantity;
                 $subTotal += $subTotalPrice;
+                $taxe = 0;
             }
         }
+
+        if (!isset($carrier['id'])) {
+            $carrier = [
+                "id" => null,
+                "name" => "Aucun transporteur",
+                "price" => 0,
+            ];
+        }
+
 
         $fullCart['data'] = [
             'subTotalHT' => (float) $subTotal,
             'subTotalTTC' => (float) ($subTotal + ($subTotal * $this->tva)),
-            'subTotalWithCarrier' => (float) (($subTotal + ($subTotal * $this->tva) +  $carrier['price']) / 100),
+            'subTotalWithCarrier' => (float) (($subTotal + ($subTotal * $this->tva) +  $carrier['price'])),
             'quantity' => $quantity_cart,
             'carrier_id' => is_array($carrier) ? $carrier['id'] : ($carrier ? $carrier->getId() : null),
             'carrier_name' => is_array($carrier) ? $carrier['name'] : ($carrier ? $carrier->getName() : null),
             'carrier_price' => is_array($carrier) ? $carrier['price'] : ($carrier ? $carrier->getPrice() : null),
+            'taxe' => $subTotal * $this->tva,
 
         ];
 

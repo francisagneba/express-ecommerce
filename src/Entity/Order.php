@@ -21,7 +21,10 @@ class Order
     private ?string $client_name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $delivery_address = null;
+    private ?string $billing_address = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $shipping_address = null;
 
     #[ORM\Column]
     private ?int $quantity = null;
@@ -36,10 +39,10 @@ class Order
     private ?int $order_cost_ttc = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $isPaid = null;
+    private ?bool $isPaid = false;
 
     #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    private string $status = "pending";
 
     #[ORM\Column]
     private ?int $carrier_price = null;
@@ -82,14 +85,26 @@ class Order
         return $this;
     }
 
-    public function getDeliveryAddress(): ?string
+    public function getShippingAddress(): ?string
     {
-        return $this->delivery_address;
+        return $this->shipping_address;
     }
 
-    public function setDeliveryAddress(?string $delivery_address): static
+    public function setShippingAddress(?string $shipping_address): static
     {
-        $this->delivery_address = $delivery_address;
+        $this->shipping_address = $shipping_address;
+
+        return $this;
+    }
+
+    public function getBillingAddress(): ?string
+    {
+        return $this->billing_address;
+    }
+
+    public function setBillingAddress(?string $billing_address): static
+    {
+        $this->billing_address = $billing_address;
 
         return $this;
     }
