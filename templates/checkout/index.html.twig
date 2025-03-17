@@ -4,10 +4,13 @@
 {% endblock %}
 
 {% block stylesheets %}
+	<link rel="stylesheet" href="/assets/css/stripe.css">
 	<script src="https://js.stripe.com/v3/"></script>
 {% endblock %}
 
 {% block body %}
+	<p>Order ID:
+		{{ orderId }}</p>
 	{% include "page_head/page_head.html.twig" with {'page_name': 'Checkout'} %}
 	<div class="main_content" data-cart="{{cart_json}}" data-public_key="{{public_key}}" data-orderid="{{orderId}}">
 		<div class="section">
@@ -111,6 +114,11 @@
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
+				<div
+					class="modal-header">
+					{# <h5 class="modal-title">Modal title</h5> #}
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
 				<div class="modal-body">
 					<form id="payment-form">
 						<div
@@ -193,7 +201,11 @@ updateButton();
 const main_content = document.querySelector(".main_content");
 const cart = JSON.parse(main_content ?. dataset ?. cart || "[]");
 const public_key = main_content ?. dataset ?. public_key || "";
-const orderid = main_content ?. dataset ?. orderid || "";
+const orderId = main_content ?. dataset ?. orderid || ""; // Assure-toi que c'est bien "orderid" et pas "orderId" ici
+
+console.log("Order ID:", orderId);
+// Vérifie qu'il est bien défini
+
 
 // This is your test publishable API key.
 const stripe = Stripe(public_key);
@@ -211,13 +223,16 @@ let emailAddress = '';
 // Fetches a payment intent and captures the client secret
 async function initialize() {
 
-const {clientSecret} = await fetch("/api/stripe/payment-intent", {
+console.log("Order ID:", orderId); // <-- Debug
+
+const {clientSecret} = await fetch (`/api/stripe/payment-intent/${orderId}`, {
 method: "POST",
 headers: {
 "Content-Type": "application/json"
 },
 body: JSON.stringify({})
 }).then((r) => r.json());
+
 
 elements = stripe.elements({clientSecret});
 

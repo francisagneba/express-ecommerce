@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Repository\OrderRepository;
 use Stripe\StripeClient;
 use App\Services\StripeService;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,24 +13,30 @@ use Symfony\Component\HttpFoundation\Request;
 class ApiStripeController extends AbstractController
 {
     private $stripeService;
+    private $orderRepo;
 
-    public function __construct(StripeService $stripeService)
+    public function __construct(StripeService $stripeService, OrderRepository $orderRepo)
     {
         $this->stripeService = $stripeService;
+        $this->orderRepo = $orderRepo;
     }
 
-    #[Route('/api/stripe/payment-intent', name: 'app_stripe_payment-intent', methods: ['POST'])]
-    public function index(Request $req): Response
+    #[Route('/api/stripe/payment-intent/{orderId}', name: 'app_stripe_payment-intent', methods: ['POST'])]
+    public function index(Request $req, string $orderId): Response
     {
         try {
             $stripeSecretKey = $this->stripeService->getPrivateKey();
-            $items = $req->toArray()['items'] ?? [];
-            //dd($items);
+
+            $order = $this->orderRepo->find($orderId);
+
+            if (!$order) {
+                return $this->json(['error' => "Order not found!"], Response::HTTP_NOT_FOUND);
+            }
 
             $stripe = new StripeClient($stripeSecretKey);
 
             $paymentIntent = $stripe->paymentIntents->create([
-                'amount' => $this->calculateOrderAmount($items),
+                'amount' => $order->getOrderCostTtc() * 100, // Stripe attend des centimes
                 'currency' => 'eur',
                 'automatic_payment_methods' => [
                     'enabled' => true,
@@ -40,12 +47,7 @@ class ApiStripeController extends AbstractController
                 'clientSecret' => $paymentIntent->client_secret,
             ]);
         } catch (\Throwable $th) {
-            return $this->json(['error' => $th->getMessage()]);
+            return $this->json(['error' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    public function calculateOrderAmount(array $cart)
-    {
-        return 2500; //$cart['subTotalWithCarrier'] ?? 0;
     }
 }
