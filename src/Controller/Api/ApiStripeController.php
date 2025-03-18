@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Repository\OrderRepository;
 use Stripe\StripeClient;
 use App\Services\StripeService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +23,7 @@ class ApiStripeController extends AbstractController
     }
 
     #[Route('/api/stripe/payment-intent/{orderId}', name: 'app_stripe_payment-intent', methods: ['POST'])]
-    public function index(Request $req, string $orderId): Response
+    public function index(Request $req, string $orderId, EntityManagerInterface $em): Response
     {
         try {
             $stripeSecretKey = $this->stripeService->getPrivateKey();
@@ -42,6 +43,10 @@ class ApiStripeController extends AbstractController
                     'enabled' => true,
                 ],
             ]);
+
+            $order->setStripeClientSecret($paymentIntent->client_secret);
+            $em->persist($order);
+            $em->flush();
 
             return $this->json([
                 'clientSecret' => $paymentIntent->client_secret,

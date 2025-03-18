@@ -7,7 +7,9 @@ use App\Entity\OrderDetails;
 use App\Services\CartServices;
 use App\Services\StripeService;
 use App\Repository\AddressRepository;
+use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -19,17 +21,20 @@ class CheckoutController extends AbstractController
     private $stripeService;
     private $session;
     private $em;
+    private $orderRepo;
 
     public function __construct(
         CartServices $cartServices,
         RequestStack $requestStack,
         StripeService $stripeService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        OrderRepository $orderRepo
     ) {
         $this->cartServices = $cartServices;
         $this->stripeService = $stripeService;
         $this->session = $requestStack->getSession();
         $this->em = $em;
+        $this->orderRepo = $orderRepo;
     }
 
     #[Route('/checkout', name: 'app_checkout')]
@@ -66,8 +71,22 @@ class CheckoutController extends AbstractController
     }
 
     #[Route('/stripe/payment/success', name: 'app_stripe_payment_success')]
-    public function paymentSuccess()
+    public function paymentSuccess(Request $req)
     {
+        $stripeClientSecret = $req->query->get("payment_intent_client_secret");
+
+        $order = $this->orderRepo->findOneByStripeClientSecret($stripeClientSecret);
+
+        if (!$order) {
+            return $this->redirectToRoute("app_error");
+        }
+
+        $this->cartServices->update('cart', []);
+
+        $order->setIsPaid(true);
+        $this->em->persist($order);
+        $this->em->flush();
+
         return $this->render('payment/index.html.twig', [
             'controller_name' => 'PaymentController',
         ]);
@@ -77,6 +96,22 @@ class CheckoutController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $oldOlder = $this->orderRepo->findOneBy([
+            "client_name" => $user->getFullName(),
+            "order_cost" => $cart["data"]["subTotalTTC"],
+            "taxe" => $cart["data"]["taxe"],
+            "isPaid" => false,
+            "order_cost_ttc" => $cart["data"]["subTotalWithCarrier"],
+            "carrier_name" => $cart["data"]["carrier_name"],
+            "carrier_price" => $cart["data"]["carrier_price"],
+            "carrier_id" => $cart["data"]["carrier_id"],
+            "quantity" => $cart["data"]["quantity"],
+        ]);
+
+        if ($oldOlder) {
+            return $oldOlder->getId();
+        }
 
         if (!$user) {
             throw new \Exception("Utilisateur non connecté");
@@ -100,6 +135,7 @@ class CheckoutController extends AbstractController
             ->setCarrierPrice($cart["data"]["carrier_price"] ?? 0)
             ->setCarrierId(isset($cart["data"]["carrier_id"]) ? (int) $cart["data"]["carrier_id"] : 0)
             ->setQuantity($cart["data"]["quantity"] ?? 0)
+            ->setIsPaid(false)
             ->setStatus("pending"); // Ajout d'un statut par défaut
 
         $this->em->persist($order);
