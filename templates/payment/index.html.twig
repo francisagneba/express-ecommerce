@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exprass Ecommerce | payment success
+{% endblock %}
+
+{% block body %}
+	{% include "page_head/page_head.html.twig" with {'page_name': "Payment success"} %}
+
+	<!-- START MAIN CONTENT -->
+	<div class="main_content">
+
+		<div class="section">
+			<div class="error_wrap">
+				<div class="container">
+					<div class="row align-items-center justify-content-center">
+						<div class="col-lg-6 col-md-10 order-lg-first">
+							<div class="text-center">
+								<div class="error_txt">Thank You</div>
+								{# <h5 class="mb-2 mb-sm-3">oops! The page you requested was not found!</h5> #}
+								<p>Thank you for your payment. You will be informed of the progress of your order by email.</p>
+								<a href="/" class="btn btn-fill-out">Back To Home</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+{% endblock %}

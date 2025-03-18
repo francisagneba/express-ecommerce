@@ -65,6 +65,14 @@ class CheckoutController extends AbstractController
         ]);
     }
 
+    #[Route('/stripe/payment/success', name: 'app_stripe_payment_success')]
+    public function paymentSuccess()
+    {
+        return $this->render('payment/index.html.twig', [
+            'controller_name' => 'PaymentController',
+        ]);
+    }
+
     public function createOrder(array $cart): int
     {
         /** @var User $user */
