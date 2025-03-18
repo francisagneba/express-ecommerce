@@ -11,10 +11,16 @@
     flex-direction: column;
     justify-content: center;
     align-content: center;
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     width: 100vw;
   }
   
+  .breadcrumb-item a {
+    font-weight: normal !important;
+    display: inline-block !important;
+  }
+
   /* form {
     width: 30vw;
     min-width: 500px;
