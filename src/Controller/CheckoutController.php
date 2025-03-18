@@ -97,34 +97,24 @@ class CheckoutController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $oldOlder = $this->orderRepo->findOneBy([
-            "client_name" => $user->getFullName(),
-            "order_cost" => $cart["data"]["subTotalTTC"],
-            "taxe" => $cart["data"]["taxe"],
-            "isPaid" => false,
-            "order_cost_ttc" => $cart["data"]["subTotalWithCarrier"],
-            "carrier_name" => $cart["data"]["carrier_name"],
-            "carrier_price" => $cart["data"]["carrier_price"],
-            "carrier_id" => $cart["data"]["carrier_id"],
-            "quantity" => $cart["data"]["quantity"],
-        ]);
-
-        if ($oldOlder) {
-            return $oldOlder->getId();
-        }
-
         if (!$user) {
             throw new \Exception("Utilisateur non connecté");
         }
 
+        // Vérifier s'il y a déjà une commande enregistrée en session
+        $session = $this->session;
+        $orderId = $session->get('current_order_id');
+
+        if ($orderId) {
+            $existingOrder = $this->orderRepo->find($orderId);
+
+            if ($existingOrder && !$existingOrder->isIsPaid()) {
+                return $orderId;
+            }
+        }
+
+        // Création d'une nouvelle commande
         $order = new Order();
-
-        $carrier = $cart["carrier"] ?? [
-            "name" => "Inconnu",
-            "price" => 0,
-            "id" => 0
-        ];
-
         $order->setClientName($user->getFullName())
             ->setBillingAddress("")
             ->setShippingAddress("")
@@ -133,10 +123,10 @@ class CheckoutController extends AbstractController
             ->setOrderCostTtc($cart["data"]["subTotalWithCarrier"] ?? 0)
             ->setCarrierName($cart["data"]["carrier_name"] ?? "Inconnu")
             ->setCarrierPrice($cart["data"]["carrier_price"] ?? 0)
-            ->setCarrierId(isset($cart["data"]["carrier_id"]) ? (int) $cart["data"]["carrier_id"] : 0)
+            ->setCarrierId($cart["data"]["carrier_id"] ?? 0)
             ->setQuantity($cart["data"]["quantity"] ?? 0)
             ->setIsPaid(false)
-            ->setStatus("pending"); // Ajout d'un statut par défaut
+            ->setStatus("pending");
 
         $this->em->persist($order);
 
@@ -156,6 +146,9 @@ class CheckoutController extends AbstractController
         }
 
         $this->em->flush();
+
+        // Sauvegarde de l'ID de la commande en session
+        $session->set('current_order_id', $order->getId());
 
         return $order->getId();
     }

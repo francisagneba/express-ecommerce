@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-	{# {% include "page_head/page_head.html.twig" with {'page_name': 'Checkout'} %} #}
+	{% include "page_head/page_head.html.twig" with {'page_name': 'Checkout'} %}
 	<div class="main_content" data-cart="{{cart_json}}" data-public_key="{{public_key}}" data-orderid="{{orderId}}">
 		<div class="section">
 			<div class="container">
