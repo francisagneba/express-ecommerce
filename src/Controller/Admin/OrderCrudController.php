@@ -38,7 +38,9 @@ class OrderCrudController extends AbstractCrudController
             TextField::new('billing_address')->hideOnIndex(),
             TextField::new('shipping_address')->hideOnIndex(),
             TextField::new('carrier_name'),
+            TextField::new('paymentMethod'),
             TextField::new('stripeClientSecret')->hideOnIndex(),
+            TextField::new('paypalClientSecret')->hideOnIndex(),
             IntegerField::new('quantity'),
             BooleanField::new('isPaid'),
             ChoiceField::new('status')->setChoices([

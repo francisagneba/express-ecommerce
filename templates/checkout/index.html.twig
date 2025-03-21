@@ -26,10 +26,10 @@
 							<select name="billing_address" class="form-control">
 								<option value="">--- Choose billing address ---</option>
 								{% for address in addresses %}
-									<option value="{{ address.id }}">
+									<option value="{{ address.id }}" data-street="{{ address.street }}" data-code_postal="{{ address.codePostal }}" data-city="{{ address.city }}" data-state="{{ address.state }}">
 										{{ address.name }}
 										({{ address.street }}
-										{{ address.codepostal }}
+										{{ address.codePostal }}
 										{{ address.city }}
 										{{ address.state }})
 									</option>
@@ -41,10 +41,10 @@
 							<select name="shipping_address" class="form-control">
 								<option value="">--- Choose shipping address ---</option>
 								{% for address in addresses %}
-									<option value="{{ address.id }}">
+									<option value="{{ address.id }}" data-street="{{ address.street }}" data-code_postal="{{ address.codePostal }}" data-city="{{ address.city }}" data-state="{{ address.state }}">
 										{{ address.name }}
 										({{ address.street }}
-										{{ address.codepostal }}
+										{{ address.codePostal }}
 										{{ address.city }}
 										{{ address.state }})
 									</option>
@@ -112,11 +112,9 @@
 
 	<!-- Modal -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 			<div class="modal-content">
-				<div
-					class="modal-header">
-					{# <h5 class="modal-title">Modal title</h5> #}
+				<div class="modal-header">
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
@@ -127,9 +125,7 @@
 					</div>
 					<div id="stripe-method">
 						<form id="payment-form">
-							<div
-								id="payment-element"><!--Stripe.js injects the Payment Element-->
-							</div>
+							<div id="payment-element"><!--Stripe.js injects the Payment Element--></div>
 							<button id="submit">
 								<div class="spinner hidden" id="spinner"></div>
 								<span id="button-text">Pay now</span>

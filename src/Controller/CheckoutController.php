@@ -90,8 +90,19 @@ class CheckoutController extends AbstractController
         $this->cartServices->update('cart', []);
 
         $order->setIsPaid(true);
+        $order->setPaymentMethod("STRIPE");
         $this->em->persist($order);
         $this->em->flush();
+
+        return $this->render('payment/index.html.twig', [
+            'controller_name' => 'PaymentController',
+        ]);
+    }
+
+    #[Route('/paypal/payment/success', name: 'app_paypal_payment_success')]
+    public function paypalPaymentSuccess(Request $req)
+    {
+        $this->cartServices->update('cart', []);
 
         return $this->render('payment/index.html.twig', [
             'controller_name' => 'PaymentController',

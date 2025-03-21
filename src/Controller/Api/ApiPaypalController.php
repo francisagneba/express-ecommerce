@@ -4,12 +4,14 @@ namespace App\Controller\Api;
 
 use App\Repository\OrderRepository;
 use App\Services\PaypalService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Exception;
+use PhpParser\Node\Stmt\TryCatch;
 
 class ApiPaypalController extends AbstractController
 {
@@ -29,7 +31,7 @@ class ApiPaypalController extends AbstractController
     }
 
     #[Route('/api/paypal/orders', name: 'app_paypal_orders', methods: ["POST"])]
-    public function index(Request $req, OrderRepository $orderRepo): Response
+    public function index(Request $req, OrderRepository $orderRepo, EntityManagerInterface $em): Response
     {
         $data = json_decode($req->getContent(), true);
         $orderId = $data["orderId"] ?? null;
@@ -46,7 +48,45 @@ class ApiPaypalController extends AbstractController
 
         $result = $this->createOrder($order);
 
+        if (isset($result['jsonResponse']['id'])) {
+            $id = $result['jsonResponse']['id'];
+            $order->setPaypalClientSecret($id);
+            $em->persist($order);
+            $em->flush();
+        }
+
         return $this->json($result['jsonResponse']);
+    }
+
+    #[Route('/api/orders/{orderID}/capture', name: 'app_capture_paypal', methods: ["POST"])]
+    public function capturePaiment($orderID, Request $req, OrderRepository $orderRepo, EntityManagerInterface $em)
+    {
+        try {
+            $result = $this->captureOrder($orderID);
+
+            if (isset($result['jsonResponse']['id']) && isset($result['jsonResponse']['status'])) {
+                $id = $result['jsonResponse']['id'];
+                $status = $result['jsonResponse']['status'];
+
+                if ($status === "COMPLETED") {
+                    $order = $orderRepo->findOneByPaypalClientSecret($id);
+
+                    if ($order) {
+                        $order->setIsPaid(true);
+                        $order->setPaymentMethod("PAYPAL");
+
+                        $em->persist($order);
+                        $em->flush();
+                    }
+                }
+            }
+
+
+            return $this->json($result['jsonResponse']);
+        } catch (Exception $error) {
+            error_log("Failed to capture order: " . $error->getMessage());
+            return $this->json(["error" => "Failed to capture order."], 500);
+        }
     }
 
     public function generateAccessToken()

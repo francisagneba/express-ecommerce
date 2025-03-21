@@ -1,310 +1,227 @@
-const paymentMethods = document.querySelector(".payment-methods i");
-const paypalMethodComponent = document.querySelector("#paypal-method");
-const stripeMethodComponent = document.querySelector("#stripe-method");
-let stripeMethod = true;
-let paypalMethod = false;
-
-const main_content = document.querySelector(".main_content");
-const cart = JSON.parse(main_content?.dataset?.cart || "[]");
-const stripe_public_key = main_content?.dataset?.stripe_public_key || "";
-const orderId = main_content?.dataset?.orderid || ""; // Assure-toi que c'est bien "orderid" et pas "orderId" ici
-
 document.addEventListener("DOMContentLoaded", () => {
-    let shipping_address = "";
-    let billing_address = "";
-    let displayPayBtn = false;
+    const paymentMethods = document.querySelector(".payment-methods i");
+    const paypalMethodComponent = document.querySelector("#paypal-method");
+    const stripeMethodComponent = document.querySelector("#stripe-method");
+    let stripeMethod = true;
+    let paypalMethod = false;
+
+    const main_content = document.querySelector(".main_content");
+    const cart = JSON.parse(main_content?.dataset?.cart || "[]");
+    const stripe_public_key = main_content?.dataset?.stripe_public_key || "";
+    const orderId = main_content?.dataset?.orderid || "";
+
+    let shipping_address = null;
+    let billing_address = null;
     let comment = "";
+    let displayPayBtn = false;
 
     const billing_address_select = document.querySelector('select[name="billing_address"]');
     const shipping_address_select = document.querySelector('select[name="shipping_address"]');
     const comments_textarea = document.querySelector('textarea');
-    const payBtn = document.querySelector('.payment_method'); // ⚠️ Vérifier si payBtn est bien trouvé
+    const payBtn = document.querySelector('.payment_method');
 
-    console.log("payBtn:", payBtn); // 🔍 Debugging
+    // Fonction pour récupérer uniquement l'ID de l'adresse
+    function getAddressId(selectElement) {
+        return selectElement.value || null;
+    }
 
+    // Fonction pour mettre à jour l'affichage du bouton de paiement
     const updateButton = () => {
-        displayPayBtn = !!billing_address && !!shipping_address;
-        console.log("Afficher bouton:", displayPayBtn);
-
+        displayPayBtn = billing_address && shipping_address;
         if (payBtn) {
-            if (displayPayBtn) {
-                payBtn.classList.remove("d-none");
-                console.log("✅ Bouton affiché !");
-            } else {
-                payBtn.classList.add("d-none");
-                console.log("❌ Bouton caché !");
-            }
-        } else {
-            console.error("⚠️ ERREUR : payBtn est introuvable !");
+            payBtn.classList.toggle("d-none", !displayPayBtn);
         }
     };
 
-    paymentMethods.onclick = () => {
-        stripeMethod = !stripeMethod
-        paypalMethod = !paypalMethod
-        if (stripeMethod) {
-            paymentMethods.className = "fa-solid fa-toggle-off"
-            stripeMethodComponent.classList.remove("d-none")
-            paypalMethodComponent.classList.add("d-none")
-        } else {
-            paymentMethods.className = "fa-solid fa-toggle-on"
-            stripeMethodComponent.classList.add("d-none")
-            paypalMethodComponent.classList.remove("d-none")
-        }
-    }
+    // Toggle Payment Methods
+    if (paymentMethods) {
+        paymentMethods.addEventListener("click", () => {
+            stripeMethod = !stripeMethod;
+            paypalMethod = !paypalMethod;
 
-    if (billing_address_select) {
-        billing_address_select.addEventListener("change", (event) => {
-            billing_address = event.target.value;
-            console.log("Nouvelle adresse de facturation:", billing_address);
-            updateButton();
-        });
-    } else {
-        console.error("❌ ERREUR : Élément 'billing_address_select' introuvable !");
-    }
-
-    if (shipping_address_select) {
-        shipping_address_select.addEventListener("change", (event) => {
-            shipping_address = event.target.value;
-            console.log("Nouvelle adresse de livraison:", shipping_address);
-            updateButton();
-        });
-    } else {
-        console.error("❌ ERREUR : Élément 'shipping_address_select' introuvable !");
-    }
-
-    if (comments_textarea) {
-        comments_textarea.addEventListener("change", (event) => {
-            comment = event.target.value;
-            updateButton();
+            paymentMethods.className = stripeMethod ? "fa-solid fa-toggle-off" : "fa-solid fa-toggle-on";
+            stripeMethodComponent.classList.toggle("d-none", !stripeMethod);
+            paypalMethodComponent.classList.toggle("d-none", stripeMethod);
         });
     }
 
-    // ✅ Déplacer ici l'événement onclick
-    if (payBtn) {
-        payBtn.onclick = async () => {
+    // Gestion des changements d'adresses
+    billing_address_select?.addEventListener("change", () => {
+        billing_address = getAddressId(billing_address_select);
+        updateButton();
+    });
+
+    shipping_address_select?.addEventListener("change", () => {
+        shipping_address = getAddressId(shipping_address_select);
+        updateButton();
+    });
+
+    // Gestion des changements de commentaire
+    comments_textarea?.addEventListener("change", (event) => {
+        comment = event.target.value;
+    });
+
+    // Gestion du clic sur le bouton de paiement
+    payBtn?.addEventListener("click", async () => {
+        try {
+            if (!orderId) {
+                console.error("❌ Erreur : Order ID manquant !");
+                return;
+            }
+
+            if (!billing_address || !shipping_address) {
+                console.error("❌ Erreur : Adresses manquantes !");
+                return;
+            }
+
+            const data = {
+                orderid: orderId,
+                billing_address: billing_address,
+                shipping_address: shipping_address
+            };
+
+            console.log("Données envoyées à l'API :", data);
+
+            const response = await fetch("/api/order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            const text = await response.text();
+
             try {
-                const response = await fetch("/api/order", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(
-                        { billing_address, shipping_address }
-                    )
-                });
-
-                const text = await response.text(); // ⚠️ Lire d'abord la réponse brute
-                console.log("Réponse brute:", text);
-
-                const result = JSON.parse(text); // ⚠️ Ensuite, essayer de parser en JSON
+                const result = JSON.parse(text);
                 console.log("Résultat JSON:", result);
 
-            } catch (error) {
-                console.error("❌ Erreur lors de la requête API:", error);
+                if (result.success) {
+                    console.log("✅ Commande mise à jour !");
+                } else {
+                    console.error("❌ Erreur API :", result.error);
+                }
+            } catch (jsonError) {
+                console.error("❌ Réponse inattendue de l'API (pas du JSON) :", text);
             }
-        };
-    }
-
-
-    // Stripe component
-
-
-    console.log("Order ID:", orderId);
-    // Vérifie qu'il est bien défini
-
-
-    // This is your test publishable API key.
-    const stripe = Stripe(stripe_public_key);
-
-    // The items the customer wants to buy
-    const items = cart.items;
-
-    let elements;
-
-    initialize();
-
-    document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
-
-    let emailAddress = '';
-    // Fetches a payment intent and captures the client secret
-    async function initialize() {
-
-        console.log("Order ID:", orderId); // <-- Debug
-
-        const { clientSecret } = await fetch(`/api/stripe/payment-intent/${orderId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({})
-        }).then((r) => r.json());
-
-
-        elements = stripe.elements({ clientSecret });
-
-        const paymentElementOptions = {
-            layout: "accordion"
-        };
-
-        const paymentElement = elements.create("payment", paymentElementOptions);
-        paymentElement.mount("#payment-element");
-    }
-
-    async function handleSubmit(e) {
-        e.preventDefault();
-        setLoading(true);
-
-        const { error } = await stripe.confirmPayment({
-            elements,
-            confirmParams: { // Make sure to change this to your payment completion page
-                return_url: window.location.origin + "/stripe/payment/success",
-                receipt_email: emailAddress
-            }
-        });
-
-        // This point will only be reached if there is an immediate error when
-        // confirming the payment. Otherwise, your customer will be redirected to
-        // your `return_url`. For some payment methods like iDEAL, your customer will
-        // be redirected to an intermediate site first to authorize the payment, then
-        // redirected to the `return_url`.
-        if (error.type === "card_error" || error.type === "validation_error") {
-            showMessage(error.message);
-        } else {
-            showMessage("An unexpected error occurred.");
+        } catch (error) {
+            console.error("❌ Erreur lors de la requête API:", error);
         }
-        setLoading(false);
-    }
+    });
 
-    // ------- UI helpers -------
+    // Stripe Initialization
+    if (stripe_public_key) {
+        const stripe = Stripe(stripe_public_key);
+        let elements;
 
-    function showMessage(messageText) {
-        const messageContainer = document.querySelector("#payment-message");
+        initializeStripe();
 
-        messageContainer.classList.remove("hidden");
-        messageContainer.textContent = messageText;
+        document.querySelector("#payment-form")?.addEventListener("submit", handleStripeSubmit);
 
-        setTimeout(function () {
-            messageContainer.classList.add("hidden");
-            messageContainer.textContent = "";
-        }, 4000);
-    }
-
-    // Show a spinner on payment submission
-    function setLoading(isLoading) {
-        if (isLoading) { // Disable the button and show a spinner
-            document.querySelector("#submit").disabled = true;
-            document.querySelector("#spinner").classList.remove("hidden");
-            document.querySelector("#button-text").classList.add("hidden");
-        } else {
-            document.querySelector("#submit").disabled = false;
-            document.querySelector("#spinner").classList.add("hidden");
-            document.querySelector("#button-text").classList.remove("hidden");
-        }
-    }
-})
-
-// Implementons le Paypal
-
-window.paypal
-    .Buttons({
-        style: {
-            shape: "rect",
-            layout: "vertical",
-            color: "gold",
-            label: "paypal",
-        },
-        message: {
-            amount: 100,
-        },
-
-        async createOrder() {
+        async function initializeStripe() {
             try {
-                const response = await fetch("/api/paypal/orders", {
+                if (!orderId) {
+                    console.error("❌ Erreur : Order ID manquant pour Stripe !");
+                    return;
+                }
+
+                const response = await fetch(`/api/stripe/payment-intent/${orderId}`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    // use the "body" param to optionally pass additional order information
-                    // like product ids and quantities
-                    body: JSON.stringify({
-                        orderId,
-                    }),
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({}),
                 });
 
-                const orderData = await response.json();
+                const { clientSecret } = await response.json();
 
-                if (orderData.id) {
-                    return orderData.id;
-                }
-                const errorDetail = orderData?.details?.[0];
-                const errorMessage = errorDetail
-                    ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                    : JSON.stringify(orderData);
-
-                throw new Error(errorMessage);
+                elements = stripe.elements({ clientSecret });
+                const paymentElement = elements.create("payment", { layout: "accordion" });
+                paymentElement.mount("#payment-element");
             } catch (error) {
-                console.error(error);
-                // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+                console.error("❌ Erreur lors de l'initialisation de Stripe :", error);
             }
-        },
+        }
 
-        async onApprove(data, actions) {
-            try {
-                const response = await fetch(
-                    `/api/orders/${data.orderID}/capture`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
+        async function handleStripeSubmit(e) {
+            e.preventDefault();
+            setLoading(true);
+
+            const { error } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: window.location.origin + "/stripe/payment/success",
+                    receipt_email: document.querySelector("#email")?.value || "",
+                },
+            });
+
+            if (error) {
+                showMessage(error.message);
+            }
+            setLoading(false);
+        }
+
+        function showMessage(message) {
+            const messageContainer = document.querySelector("#payment-message");
+            messageContainer.textContent = message;
+            messageContainer.classList.remove("hidden");
+
+            setTimeout(() => {
+                messageContainer.classList.add("hidden");
+                messageContainer.textContent = "";
+            }, 4000);
+        }
+
+        function setLoading(isLoading) {
+            document.querySelector("#submit").disabled = isLoading;
+            document.querySelector("#spinner").classList.toggle("hidden", !isLoading);
+            document.querySelector("#button-text").classList.toggle("hidden", isLoading);
+        }
+    }
+
+    // PayPal Integration
+    if (window.paypal) {
+        window.paypal.Buttons({
+            style: { shape: "rect", layout: "vertical", color: "gold", label: "paypal" },
+            async createOrder() {
+                try {
+                    if (!orderId) {
+                        console.error("❌ Erreur : Order ID manquant pour PayPal !");
+                        return;
                     }
-                );
 
-                const orderData = await response.json();
-                // Three cases to handle:
-                //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                //   (2) Other non-recoverable errors -> Show a failure message
-                //   (3) Successful transaction -> Show confirmation or thank you message
+                    const response = await fetch("/api/paypal/orders", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ orderId }),
+                    });
 
-                const errorDetail = orderData?.details?.[0];
+                    const orderData = await response.json();
+                    if (orderData.id) return orderData.id;
 
-                if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-                    // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                    // recoverable state, per
-                    // https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-                    return actions.restart();
-                } else if (errorDetail) {
-                    // (2) Other non-recoverable errors -> Show a failure message
-                    throw new Error(
-                        `${errorDetail.description} (${orderData.debug_id})`
-                    );
-                } else if (!orderData.purchase_units) {
-                    throw new Error(JSON.stringify(orderData));
-                } else {
-                    // (3) Successful transaction -> Show confirmation or thank you message
-                    // Or go to another URL:  actions.redirect('thank_you.html');
-                    const transaction =
-                        orderData?.purchase_units?.[0]?.payments
-                            ?.captures?.[0] ||
-                        orderData?.purchase_units?.[0]?.payments
-                            ?.authorizations?.[0];
-                    resultMessage(
-                        `Transaction ${transaction.status}: ${transaction.id}<br>
-          <br>See console for all available details`
-                    );
-                    console.log(
-                        "Capture result",
-                        orderData,
-                        JSON.stringify(orderData, null, 2)
-                    );
+                    throw new Error(orderData?.details?.[0]?.description || "Erreur inconnue");
+                } catch (error) {
+                    console.error("❌ Erreur PayPal :", error);
                 }
-            } catch (error) {
-                console.error(error);
-                resultMessage(
-                    `Sorry, your transaction could not be processed...<br><br>${error}`
-                );
+            },
+            async onApprove(data, actions) {
+                try {
+                    const response = await fetch(`/api/orders/${data.orderID}/capture`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                    });
+
+                    const orderData = await response.json();
+
+                    if (orderData?.details?.[0]?.issue === "INSTRUMENT_DECLINED") {
+                        return actions.restart();
+                    } else if (orderData.purchase_units) {
+                        window.location.href = window.location.origin + "/paypal/payment/success";
+                    } else {
+                        throw new Error("Erreur inconnue lors de la capture de paiement.");
+                    }
+                } catch (error) {
+                    console.error("❌ Erreur PayPal :", error);
+                }
             }
-        },
-    })
-    .render("#paypal-button-container"); 
+        }).render("#paypal-button-container");
+    }
+});
