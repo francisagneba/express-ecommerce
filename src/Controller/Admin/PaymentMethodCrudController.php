@@ -44,6 +44,8 @@ class PaymentMethodCrudController extends AbstractCrudController
             TextField::new('test_private_api_key')->hideOnIndex(),
             TextField::new('prod_public_api_key')->hideOnIndex(),
             TextField::new('prod_private_api_key')->hideOnIndex(),
+            TextField::new('testBaseUrl')->hideOnIndex(),
+            TextField::new('prodBaseUrl')->hideOnIndex(),
         ];
     }
 }

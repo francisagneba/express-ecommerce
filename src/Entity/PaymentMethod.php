@@ -44,6 +44,12 @@ class PaymentMethod
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $testBaseUrl = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $prodBaseUrl = null;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
@@ -170,6 +176,30 @@ class PaymentMethod
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getTestBaseUrl(): ?string
+    {
+        return $this->testBaseUrl;
+    }
+
+    public function setTestBaseUrl(?string $testBaseUrl): static
+    {
+        $this->testBaseUrl = $testBaseUrl;
+
+        return $this;
+    }
+
+    public function getProdBaseUrl(): ?string
+    {
+        return $this->prodBaseUrl;
+    }
+
+    public function setProdBaseUrl(?string $prodBaseUrl): static
+    {
+        $this->prodBaseUrl = $prodBaseUrl;
 
         return $this;
     }

@@ -8,6 +8,7 @@ use App\Services\CartServices;
 use App\Services\StripeService;
 use App\Repository\AddressRepository;
 use App\Repository\OrderRepository;
+use App\Services\PaypalService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,7 @@ class CheckoutController extends AbstractController
 {
     private $cartServices;
     private $stripeService;
+    private $paypalService;
     private $session;
     private $em;
     private $orderRepo;
@@ -27,11 +29,13 @@ class CheckoutController extends AbstractController
         CartServices $cartServices,
         RequestStack $requestStack,
         StripeService $stripeService,
+        PaypalService $paypalService,
         EntityManagerInterface $em,
         OrderRepository $orderRepo
     ) {
         $this->cartServices = $cartServices;
         $this->stripeService = $stripeService;
+        $this->paypalService = $paypalService;
         $this->session = $requestStack->getSession();
         $this->em = $em;
         $this->orderRepo = $orderRepo;
@@ -58,7 +62,8 @@ class CheckoutController extends AbstractController
 
         $orderId = $this->createOrder($cart);
 
-        $public_key = $this->stripeService->getPublicKey();
+        $stripe_public_key = $this->stripeService->getPublicKey();
+        $paypal_public_key = $this->paypalService->getPublicKey();
 
         return $this->render('checkout/index.html.twig', [
             'controller_name' => 'CheckoutController',
@@ -66,7 +71,8 @@ class CheckoutController extends AbstractController
             'orderId' => $orderId,
             'cart_json' => $cart_json,
             'addresses' => $addresses,
-            'public_key' => $public_key,
+            'stripe_public_key' => $stripe_public_key,
+            'paypal_public_key' => $paypal_public_key,
         ]);
     }
 
