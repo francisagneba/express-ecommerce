@@ -84,8 +84,12 @@
 									</tbody>
 									<tfoot>
 										<tr>
-											<th>SubTotal</th>
+											<th>SubTotal HT</th>
 											<td class="product-subtotal">{{ (cart.data.subTotalHT / 100) | format_currency('EUR') }}</td>
+										</tr>
+										<tr>
+											<th>Taxe</th>
+											<td class="product-subtotal">{{ (cart.data.taxe / 100) | format_currency('EUR') }}</td>
 										</tr>
 										<tr>
 											<th>Shipping</th>

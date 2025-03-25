@@ -252,13 +252,14 @@ export const displayCart = (cart = null) => {
     console.log(cart);
     let tbody = document.querySelector('.shop_cart_table tbody');
     let cart_total_amounts = document.querySelectorAll('.cart_total_amount1');
+    let cart_total_amountssss = document.querySelectorAll('.cart_total_amount4');
     let cart_total_amountss = document.querySelectorAll('.cart_total_amount2');
     let cart_total_amountsss = document.querySelectorAll('.cart_total_amount3');
 
     if (tbody) {
         tbody.innerHTML = ""; // Vide le tableau des produits
 
-        let totalHT = 0; // Total Hors Taxes
+        //let totalHT = 0; // Total Hors Taxes
         let totalTTC = 0; // Total Toutes Taxes Comprises
 
         // Ajoute les nouveaux produits dans le tableau
@@ -266,12 +267,14 @@ export const displayCart = (cart = null) => {
             let product = item.product || {};
             let quantity = item.quantity || 0;
             let sub_total = item.sub_total || 0;
+            let taxe = item.taxe || 0;
+            let sub_total_ht = item.sub_total_ht || 0;
             let productPrice = product.soldePrice || 0;
             let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
             let productName = product.name || 'Unknown Product';
 
-            totalHT += sub_total; // Ajout du sous-total HT
-            totalTTC += sub_total * 1.2; // Ajout du sous-total TTC avec TVA à 20%
+            totalTTC += sub_total; // Ajout du sous-total HT
+            //totalTTC += sub_total * 1.2; // Ajout du sous-total TTC avec TVA à 20%
 
             let content = `
              <tr>
@@ -291,6 +294,8 @@ export const displayCart = (cart = null) => {
                          </a>
                      </div>
                  </td>
+                 <td class="product-subtotal">${formatPrice(taxe / 100)}</td>
+                 <td class="product-subtotal">${formatPrice(sub_total_ht / 100)}</td>
                  <td class="product-subtotal">${formatPrice(sub_total / 100)}</td>
                  <td class="product-remove">
                      <a href="/cart/delete-all/${product.id || 0}/${quantity}" class="item_remove">
@@ -305,7 +310,12 @@ export const displayCart = (cart = null) => {
         // Mise à jour du total HT et TTC dans l'affichage
         cart_total_amounts.forEach(cart_total_amount => {
             cart_total_amount.innerHTML = `
-                <span>${formatPrice(totalHT / 100)}</span>            
+                <span>${formatPrice(cart.data.subTotalHT / 100)}</span>            
+            `;
+        });
+        cart_total_amountssss.forEach(cart_total_amount => {
+            cart_total_amount.innerHTML = `
+                <span>${formatPrice(cart.data.taxe / 100)}</span>            
             `;
         });
         cart_total_amountss.forEach(cart_total_amount => {
@@ -375,10 +385,12 @@ export const displayWishlist = (wishlist = null) => {
 export const updateHeaderCart = async (cart = null) => {
     let cart_count = document.querySelector(".cart_count");
     let cart_list = document.querySelector(".cart_list");
-    let cart_price_value = document.querySelector(".cart_price_value");
+    let cart_price_value_ht = document.querySelector(".cart_price_value_ht");
+    let cart_taxe_value = document.querySelector(".cart_taxe_value");
+    let cart_price_value_ttc = document.querySelector(".cart_price_value_ttc");
 
     // Vérification que les éléments existent
-    if (!cart_count || !cart_list || !cart_price_value) {
+    if (!cart_count || !cart_list || !cart_price_value_ht) {
         console.warn("Un ou plusieurs éléments du header cart sont introuvables.");
         return;
     }
@@ -395,7 +407,9 @@ export const updateHeaderCart = async (cart = null) => {
             return total + productPrice * item.quantity;
         }, 0);
 
-        cart_price_value.textContent = formatPrice(subTotal / 100);
+        cart_price_value_ht.textContent = formatPrice(cart.data.subTotalHT / 100);
+        cart_taxe_value.textContent = formatPrice(cart.data.taxe / 100);
+        cart_price_value_ttc.textContent = formatPrice(cart.data.subTotalTTC / 100);
 
         let content = cart.items.map(item => {
             let product = item.product || {};
@@ -411,8 +425,9 @@ export const updateHeaderCart = async (cart = null) => {
                 </div>
                 <div class="cart-item-info">
                     <div class="cart-item-name">${productName}</div>
-                    <div>${quantity}</div>
-                    <div class="cart-item-price">${formatPrice(productPrice / 100)}</div>
+                    <div>${quantity}  x  ${formatPrice(productPrice / 100)} 
+                    =  ${formatPrice(productPrice * quantity / 100)}</div>
+                    <div class="cart-item-price"></div>
                     <div class="cart-item-remove">
                         <a href="/cart/delete-all/${product.id}/${item.quantity}">
                             <i class="ti-close"></i>

@@ -8,6 +8,7 @@ use App\Entity\OrderDetails;
 use App\Repository\CarrierRepository;
 use App\Repository\OrderDetailsRepository;
 use App\Repository\ProductRepository;
+use App\Repository\SettingRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -18,12 +19,14 @@ class CartServices
     private $carrierRipo;
     private $tva = 0.2;
     private $taxe;
+    private $settingRepo;
 
-    public function __construct(RequestStack $requestStack, ProductRepository $repoProduct, CarrierRepository $carrierRepo, OrderDetailsRepository $orderDetailsRepo)
+    public function __construct(RequestStack $requestStack, ProductRepository $repoProduct, CarrierRepository $carrierRepo, OrderDetailsRepository $orderDetailsRepo, SettingRepository $settingRepo)
     {
         $this->session = $requestStack->getSession(); // Obtenir la session à partir de RequestStack
         $this->repoProduct = $repoProduct;
         $this->carrierRipo = $carrierRepo;
+        $this->settingRepo = $settingRepo;
     }
 
     public function addToCart(int $id, int $count = 1): void
@@ -107,6 +110,13 @@ class CartServices
             }
         }
 
+        $taxe_rate = 0;
+
+        $setting = $this->settingRepo->findOneBy(["website_name" => "Express Ecommerce"]);
+
+        if ($setting) {
+            $taxe_rate = $setting->getTaxeRate() / 100;
+        }
 
         foreach ($cart as $id => $quantity) {
             $product = $this->repoProduct->find($id);
@@ -117,7 +127,8 @@ class CartServices
 
                 $fullCart['items'][] = [
                     "quantity" => $quantity,
-                    'taxe' => 0,
+                    'sub_total_ht' => round($subTotalPrice / (1 + $taxe_rate)),
+                    'taxe' => round($taxe_rate * $subTotalPrice / (1 + $taxe_rate)),
                     "sub_total" => $subTotalPrice,
                     "product" => [
                         'id' => $product->getId(),
@@ -144,14 +155,15 @@ class CartServices
 
 
         $fullCart['data'] = [
-            'subTotalHT' => (float) $subTotal,
-            'subTotalTTC' => (float) ($subTotal + ($subTotal * $this->tva)),
-            'subTotalWithCarrier' => (float) (($subTotal + ($subTotal * $this->tva) +  $carrier['price'])),
+            'subTotalHT' => round((float) ($subTotal / (1 + $taxe_rate))),
+            'subTotalTTC' => round((float) ($subTotal)),
+            'subTotalWithCarrier' => round((float) (($subTotal +  $carrier['price']))),
             'quantity' => $quantity_cart,
             'carrier_id' => is_array($carrier) ? $carrier['id'] : ($carrier ? $carrier->getId() : null),
             'carrier_name' => is_array($carrier) ? $carrier['name'] : ($carrier ? $carrier->getName() : null),
             'carrier_price' => is_array($carrier) ? $carrier['price'] : ($carrier ? $carrier->getPrice() : null),
-            'taxe' => $subTotal * $this->tva,
+            //'taxe' => $subTotal * $this->tva,
+            'taxe' => round((float) ($subTotal / (1 + $taxe_rate)) * $taxe_rate),
 
         ];
 
