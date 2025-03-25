@@ -246,7 +246,10 @@ export const addCartEventListenerToLink = () => {
 
 export const displayCart = (cart = null) => {
     // Met à jour l'affichage du panier dans le DOM
-    updateHeaderCart(cart);
+    if (cart) {
+        updateHeaderCart(cart);
+    }
+
 
     if (!cart) return;
     console.log(cart);
@@ -268,7 +271,7 @@ export const displayCart = (cart = null) => {
             let quantity = item.quantity || 0;
             let sub_total = item.sub_total || 0;
             let taxe = item.taxe || 0;
-            let sub_total_ht = item.sub_total_ht || 0;
+            let sub_total_ht = item.order_cost_ht || 0;
             let productPrice = product.soldePrice || 0;
             let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
             let productName = product.name || 'Unknown Product';
@@ -407,9 +410,18 @@ export const updateHeaderCart = async (cart = null) => {
             return total + productPrice * item.quantity;
         }, 0);
 
-        cart_price_value_ht.textContent = formatPrice(cart.data.subTotalHT / 100);
-        cart_taxe_value.textContent = formatPrice(cart.data.taxe / 100);
-        cart_price_value_ttc.textContent = formatPrice(cart.data.subTotalTTC / 100);
+        console.log(cart); // Vérifiez ce que contient `cart`
+        console.log(cart?.data?.subTotalHT); // Vérifiez si `subTotalHT` est bien défini
+
+        if (!cart || !cart.data) {
+            console.warn("cart ou cart.data est indéfini :", cart);
+            return;
+        }
+
+        cart_price_value_ht.textContent = formatPrice((cart.data?.subTotalHT || 0) / 100);
+        cart_taxe_value.textContent = formatPrice((cart.data?.taxe || 0) / 100);
+        cart_price_value_ttc.textContent = formatPrice((cart.data?.subTotalTTC || 0) / 100);
+
 
         let content = cart.items.map(item => {
             let product = item.product || {};
