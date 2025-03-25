@@ -126,7 +126,15 @@ class CheckoutController extends AbstractController
             $existingOrder = $this->orderRepo->find($orderId);
 
             if ($existingOrder && !$existingOrder->isIsPaid()) {
-                return $orderId;
+                if ($existingOrder->getQuantity() != ($cart["data"]["quantity"] ?? 0)) {
+                    foreach ($existingOrder->getOrderDetails() as $detail) {
+                        $this->em->remove($detail);
+                    }
+                    $this->em->remove($existingOrder);
+                    $this->em->flush();
+                } else {
+                    return $orderId;
+                }
             }
         }
 
@@ -135,7 +143,7 @@ class CheckoutController extends AbstractController
         $order->setClientName($user->getFullName())
             ->setBillingAddress("")
             ->setShippingAddress("")
-            ->setOrderCost($cart["data"]["subTotalTTC"] ?? 0)
+            ->setOrderCostHT($cart["data"]["subTotalHT"] ?? 0)
             ->setTaxe($cart["data"]["taxe"] ?? 0)
             ->setOrderCostTtc($cart["data"]["subTotalWithCarrier"] ?? 0)
             ->setCarrierName($cart["data"]["carrier_name"] ?? "Inconnu")

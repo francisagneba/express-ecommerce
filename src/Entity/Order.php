@@ -30,7 +30,7 @@ class Order
     private ?int $quantity = null;
 
     #[ORM\Column]
-    private ?int $order_cost = null;
+    private ?int $order_cost_ht = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $taxe = null;
@@ -130,14 +130,14 @@ class Order
         return $this;
     }
 
-    public function getOrderCost(): ?int
+    public function getOrderCostHt(): ?int
     {
-        return $this->order_cost;
+        return $this->order_cost_ht;
     }
 
-    public function setOrderCost(int $order_cost): static
+    public function setOrderCostHt(int $order_cost_ht): static
     {
-        $this->order_cost = $order_cost;
+        $this->order_cost_ht = $order_cost_ht;
 
         return $this;
     }

@@ -440,7 +440,9 @@ export const updateHeaderCart = async (cart = null) => {
         cart_list.innerHTML = content;
     } else {
         cart_count.textContent = "0";
-        cart_price_value.textContent = formatPrice(0);
+        cart_price_value_ht.textContent = formatPrice(0);
+        cart_taxe_value.textContent = formatPrice(0);
+        cart_price_value_ttc.textContent = formatPrice(0);
         cart_list.innerHTML = "<div class='empty-cart'>Votre panier est vide !</div>";
     }
 };

@@ -127,7 +127,7 @@ class CartServices
 
                 $fullCart['items'][] = [
                     "quantity" => $quantity,
-                    'sub_total_ht' => round($subTotalPrice / (1 + $taxe_rate)),
+                    'order_cost_ht' => round($subTotalPrice / (1 + $taxe_rate)),
                     'taxe' => round($taxe_rate * $subTotalPrice / (1 + $taxe_rate)),
                     "sub_total" => $subTotalPrice,
                     "product" => [

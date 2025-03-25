@@ -50,7 +50,7 @@ class OrderCrudController extends AbstractCrudController
                 'Delivered order' => 'Delivered order',
             ]),
             MoneyField::new('carrier_price')->setCurrency('EUR'),
-            MoneyField::new('order_cost')->setCurrency('EUR'),
+            MoneyField::new('order_cost_ht')->setCurrency('EUR'),
             MoneyField::new('taxe')->setCurrency('EUR'),
             MoneyField::new('order_cost_ttc')->setCurrency('EUR'),
         ];
