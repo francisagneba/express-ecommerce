@@ -1,0 +1,24 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block content %}
+	<div class="container">
+		<h1>Répondre à
+			{{ contact.email }}</h1>
+		<p>
+			<strong>Objet :</strong>
+			{{ contact.subject }}</p>
+		<p>
+			<strong>Message reçu :</strong>
+		</p>
+		<p>{{ contact.content }}</p>
+
+		<form method="post">
+			<div class="form-group">
+				<label for="response">Votre réponse :</label>
+				<textarea id="response" name="response" class="form-control" rows="5" required></textarea>
+			</div>
+			<button type="submit" class="btn btn-success mt-3">Envoyer</button>
+			<a href="{{ path('admin') }}" class="btn btn-secondary mt-3">Annuler</a>
+		</form>
+	</div>
+{% endblock %}
