@@ -6,10 +6,12 @@ use App\Entity\Product;
 use App\Entity\Category;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class DatabaseActivitySubscriber implements EventSubscriberInterface
+#[AsDoctrineListener(event: Events::postUpdate)]
+#[AsDoctrineListener(event: Events::postRemove)]
+class DatabaseActivitySubscriber
 {
     private $projectDir;
 
@@ -21,6 +23,7 @@ class DatabaseActivitySubscriber implements EventSubscriberInterface
     public function getSubscribedEvents(): array
     {
         return [
+            Events::postUpdate,
             Events::postRemove,
         ];
     }
