@@ -13,24 +13,24 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class CartController extends AbstractController
 {
     private CartServices $cartServices;
-    private CarrierRepository $carrierRipo;
+    private CarrierRepository $carrierRepo;
 
-    public function __construct(CartServices $cartServices, CarrierRepository $carrierRipo)
+    public function __construct(CartServices $cartServices, CarrierRepository $carrierRepo)
     {
         $this->cartServices = $cartServices;
-        $this->carrierRipo = $carrierRipo;
+        $this->carrierRepo = $carrierRepo;
     }
 
     #[Route('/cart', name: 'app_cart')]
     public function index(Request $request, SessionInterface $session): Response
     {
-        if (!$session->isStarted()) {
-            $session->start();
-        }
+        // if (!$session->isStarted()) {
+        //     $session->start();
+        // }
 
         $cart = $this->cartServices->getFullCart();
 
-        $carriers = $this->carrierRipo->findAll();
+        $carriers = $this->carrierRepo->findAll();
 
         foreach ($carriers as $key => $carrier) {
             $carriers[$key] = [
@@ -63,25 +63,26 @@ class CartController extends AbstractController
     public function addToCart(int $id, Request $request, int $count = 1): Response
     {
         try {
-            if ($id <= 0 || $count <= 0) {
-                return $this->json(['error' => 'Invalid product ID or quantity'], Response::HTTP_BAD_REQUEST);
+            if (!$request->isXmlHttpRequest()) {
+                // Si ce n'est pas une requête AJAX, envoyer une erreur ou rediriger
+                return $this->json([
+                    'error' => 'Unexpected request type. Please use AJAX.'
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $this->cartServices->addToCart($id, $count);
 
-            if ($request->isXmlHttpRequest()) {
-                return $this->json([
-                    'status' => 'success',
-                    'message' => 'Product added to cart',
-                    'cart' => $this->cartServices->getFullCart()
-                ], Response::HTTP_OK);
-            }
-
-            return $this->redirectToRoute('app_cart');
+            return $this->json([
+                'status' => 'success',
+                'message' => 'Product added to cart',
+                'cart' => $this->cartServices->getFullCart()
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     #[Route('/cart/delete/{id}/1', name: 'cart_delete')]
     public function deleteFromCart(int $id, Request $request): Response
@@ -151,7 +152,7 @@ class CartController extends AbstractController
     {
         $id = $req->getPayload()->get("carrierId");
         //dd($id);
-        $carrier = $this->carrierRipo->findOneById($id);
+        $carrier = $this->carrierRepo->findOneById($id);
 
         if (!$carrier) {
             return $this->redirectToRoute("app_home");

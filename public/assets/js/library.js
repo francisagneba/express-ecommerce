@@ -1,100 +1,113 @@
 export const formatPrice = (price) => {
-    return Intl.NumberFormat('en-US', { style: 'currency', currency: 'EUR' })
-        .format(price);
-}
+    return Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
+};
 
 export const addFlashMessage = (message, status = "success") => {
-    // Empêche l'ajout de multiples messages flash simultanément
     const notificationContainer = document.querySelector(".notification");
     if (!notificationContainer) return;
 
-    // Vérifie si un message est déjà présent et empêche d'ajouter un autre
     if (notificationContainer.querySelector(".alert")) {
-        return;  // Ne pas ajouter un autre message si un message est déjà visible
+        return;
     }
 
-    let text = `
-    <div class="alert alert-${status}" role="alert">
-    ${message}
-    </div>
+    let alert = `
+        <div class="alert alert-${status}" role="alert">
+            ${message}
+        </div>
     `;
-    let audio = document.createElement("audio");
-    audio.src = "/assets/audios/success.wav";
+
+    const audio = new Audio("/assets/audios/success.wav");
     audio.play();
 
-    notificationContainer.innerHTML += text;
+    notificationContainer.innerHTML += alert;
 
     setTimeout(() => {
         notificationContainer.innerHTML = "";
     }, 2000);
 };
 
-export const fetchData = async (requestUrl) => {
+const fetchData = async (url, method = 'POST', body = null) => {
     try {
-        let response = await fetch(requestUrl);
-        console.log("Response URL:", requestUrl);
-        console.log("Response:", response);
+        console.log(`Appel AJAX vers : ${url}`);
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            },
+            body: body ? JSON.stringify(body) : null
+        });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        const contentType = response.headers.get('content-type');
+        const text = await response.text();
 
-        const contentType = response.headers.get("content-type");
-
-        if (contentType && contentType.includes("application/json")) {
-            let data = await response.json();
-            console.log("Fetched Data:", data);
-            return data;
-        } else if (contentType && contentType.includes("text/html")) {
-            let errorText = await response.text();
-            console.error("HTML response received instead of JSON:", errorText);
-            throw new Error("Expected JSON, but received HTML");
+        if (response.ok && contentType && contentType.includes('application/json')) {
+            return JSON.parse(text);
         } else {
-            let errorText = await response.text();
-            console.error("Unexpected response type:", contentType, errorText);
-            throw new Error("Unexpected response type: " + contentType);
+            console.warn("Contenu inattendu : ", text);
+            throw new Error("Réponse HTML ou autre contenu inattendu");
         }
     } catch (error) {
-        console.error("Error fetching data:", error);
-        addFlashMessage("An error occurred. Please try again.", "danger");
-        return null;
+        console.error("Erreur lors de la récupération des données:", error);
+        throw error;
     }
 };
 
 
 
 
-
 export const manageCartLink = async (event) => {
     event.preventDefault();
-    let link = event.target.href ? event.target : event.target.parentNode
-    let requestUrl = link.href
-    const cart = await fetchData(requestUrl)
 
-    let productId = requestUrl.split('/')[5];
-    let product = await fetchData("/product/get/" + productId)
+    let link = event.target.href ? event.target : event.target.parentNode;
+    let requestUrl = link.href;
 
-
-
-    if (requestUrl.search('/cart/add/') != -1) {
-        // add to cart
-        if (product) {
-            addFlashMessage(`Product (${product.name}) added to cart !`)
-        } else {
-            addFlashMessage("Product added to cart !")
-        }
+    // Vérifiez que l'URL est définie avant de procéder
+    if (!requestUrl) {
+        console.error("L'URL de la requête est indéfinie !");
+        addFlashMessage("Une erreur est survenue. Veuillez réessayer.", "danger");
+        return;
     }
-    if (requestUrl.search('/cart/remove/') != -1) {
-        // remove from cart
-        if (product) {
-            addFlashMessage(`Product (${product.name}) removed to cart !`, "danger")
-        } else {
-            addFlashMessage("Product removed to cart !", "danger")
+
+    try {
+        const cart = await fetchData(requestUrl);
+
+        // Vérifiez que l'URL contient un identifiant de produit valide
+        let productId = requestUrl.split('/')[5];
+        if (!productId) {
+            console.error("L'ID du produit est introuvable dans l'URL !");
+            addFlashMessage("Une erreur est survenue. Veuillez réessayer.", "danger");
+            return;
         }
+
+        let product = await fetchData("/product/get/" + productId);
+
+        if (requestUrl.includes('/cart/add/')) {
+            if (product) {
+                addFlashMessage(`Produit (${product.name}) ajouté au panier !`);
+            } else {
+                addFlashMessage("Produit ajouté au panier !");
+            }
+        }
+
+        if (requestUrl.includes('/cart/remove/')) {
+            if (product) {
+                addFlashMessage(`Produit (${product.name}) retiré du panier !`, "danger");
+            } else {
+                addFlashMessage("Produit retiré du panier !", "danger");
+            }
+        }
+
+        displayCart(cart);
+        updateHeaderCart();
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données : ", error);
+        addFlashMessage("Une erreur est survenue lors de la mise à jour du panier. Veuillez réessayer.", "danger");
     }
-    displayCart(cart)
-    updateHeaderCart()
-}
+};
+
+
 
 
 export const manageCompareLink = async (event) => {
@@ -232,27 +245,24 @@ export const addWiwhListEventListenerToLink = () => {
 }
 
 export const addCartEventListenerToLink = () => {
-
-    let links = document.querySelectorAll('.shop_cart_table tbody a, a.add-to-cart, a.item_remove,  a.btn-addtocart')
+    const links = document.querySelectorAll('.shop_cart_table tbody a, a.add-to-cart, a.item_remove, a.btn-addtocart');
     links.forEach((link) => {
-        link.addEventListener("click", manageCartLink)
-    })
-
-    // let add_to_cart_links = document.querySelectorAll('a.add-to-cart, a.item_remove,  a.btn-addtocart')
-    // add_to_cart_links.forEach((link) => {
-    //     link.addEventListener("click", manageCartLink)
-    // })
-}
+        link.addEventListener("click", manageCartLink);
+    });
+};
 
 export const displayCart = (cart = null) => {
+    // Vérifiez si cart existe et si cart.items est un tableau
+    if (!cart || !Array.isArray(cart.items)) {
+        console.warn("Cart ou cart.items est manquant ou invalide");
+        return; // Ne continuez pas si les données sont incorrectes
+    }
+
     // Met à jour l'affichage du panier dans le DOM
     if (cart) {
         updateHeaderCart(cart);
     }
 
-
-    if (!cart) return;
-    console.log(cart);
     let tbody = document.querySelector('.shop_cart_table tbody');
     let cart_total_amounts = document.querySelectorAll('.cart_total_amount1');
     let cart_total_amountssss = document.querySelectorAll('.cart_total_amount4');
@@ -262,8 +272,7 @@ export const displayCart = (cart = null) => {
     if (tbody) {
         tbody.innerHTML = ""; // Vide le tableau des produits
 
-        //let totalHT = 0; // Total Hors Taxes
-        let totalTTC = 0; // Total Toutes Taxes Comprises
+        let totalTTC = 0; // Total TTC
 
         // Ajoute les nouveaux produits dans le tableau
         cart.items.forEach((item) => {
@@ -276,8 +285,7 @@ export const displayCart = (cart = null) => {
             let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
             let productName = product.name || 'Unknown Product';
 
-            totalTTC += sub_total; // Ajout du sous-total HT
-            //totalTTC += sub_total * 1.2; // Ajout du sous-total TTC avec TVA à 20%
+            totalTTC += sub_total;
 
             let content = `
              <tr>
@@ -310,33 +318,22 @@ export const displayCart = (cart = null) => {
             tbody.innerHTML += content;
         });
 
-        // Mise à jour du total HT et TTC dans l'affichage
+        // Mise à jour des totaux
         cart_total_amounts.forEach(cart_total_amount => {
-            cart_total_amount.innerHTML = `
-                <span>${formatPrice(cart.data.subTotalHT / 100)}</span>            
-            `;
+            cart_total_amount.innerHTML = `<span>${formatPrice(cart.data.subTotalHT / 100)}</span>`;
         });
         cart_total_amountssss.forEach(cart_total_amount => {
-            cart_total_amount.innerHTML = `
-                <span>${formatPrice(cart.data.taxe / 100)}</span>            
-            `;
+            cart_total_amount.innerHTML = `<span>${formatPrice(cart.data.taxe / 100)}</span>`;
         });
         cart_total_amountss.forEach(cart_total_amount => {
-            cart_total_amount.innerHTML = `
-                <span>${formatPrice(cart.data.carrier_price / 100)}</span>
-            `;
+            cart_total_amount.innerHTML = `<span>${formatPrice(cart.data.carrier_price / 100)}</span>`;
         });
         cart_total_amountsss.forEach(cart_total_amount => {
-            cart_total_amount.innerHTML = `
-                <span>${formatPrice((totalTTC + cart.data.carrier_price) / 100)}</span>
-            `;
+            cart_total_amount.innerHTML = `<span>${formatPrice((totalTTC + cart.data.carrier_price) / 100)}</span>`;
         });
-
-        // Réattacher les événements pour incrémentation/décrémentation
-        //addCartEventListenerToLink();
-
     }
 };
+
 
 export const displayWishlist = (wishlist = null) => {
 

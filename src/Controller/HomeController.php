@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 class HomeController extends AbstractController
 {
@@ -31,9 +33,9 @@ class HomeController extends AbstractController
         CollectionsRepository $collectionsRepo,
         CategoryRepository $categoryRepo,
         PageRepository $pageRepo,
-        Request $request
+        SessionInterface $session
     ): Response {
-        $session = $request->getSession();
+        // $session = $request->getSession();
         $data = $settingRepo->findAll();
         $sliders = $slidersRepo->findAll();
         $collections = $collectionsRepo->findBy(['isMega' => false]);

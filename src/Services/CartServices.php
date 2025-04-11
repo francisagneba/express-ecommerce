@@ -16,16 +16,16 @@ class CartServices
 {
     private $session;
     private $repoProduct;
-    private $carrierRipo;
-    private $tva = 0.2;
-    private $taxe;
+    private $carrierRepo;
+    // private $tva = 0.2;
+    // private $taxe;
     private $settingRepo;
 
     public function __construct(RequestStack $requestStack, ProductRepository $repoProduct, CarrierRepository $carrierRepo, OrderDetailsRepository $orderDetailsRepo, SettingRepository $settingRepo)
     {
         $this->session = $requestStack->getSession(); // Obtenir la session à partir de RequestStack
         $this->repoProduct = $repoProduct;
-        $this->carrierRipo = $carrierRepo;
+        $this->carrierRepo = $carrierRepo;
         $this->settingRepo = $settingRepo;
     }
 
@@ -46,6 +46,7 @@ class CartServices
 
         $this->update("cart", $cart); // Mettre à jour le panier
     }
+
 
     public function deleteFromCart(int $id): void
     {
@@ -82,9 +83,9 @@ class CartServices
         $this->update("carrier", $carrier);
     }
 
-    public function get($key): array
+    public function get($key): mixed
     {
-        return $this->session->get($key, []);
+        return $this->session->get($key);
     }
 
     public function getFullCart(): array
@@ -97,7 +98,7 @@ class CartServices
         $carrier = $this->get("carrier");
 
         if (!$carrier) {
-            $carrierEntity = $this->carrierRipo->findAll()[0] ?? null;
+            $carrierEntity = $this->carrierRepo->findAll()[0] ?? null;
 
             if ($carrierEntity) {
                 $carrier = [
@@ -141,7 +142,7 @@ class CartServices
                 ];
                 $quantity_cart += $quantity;
                 $subTotal += $subTotalPrice;
-                $taxe = 0;
+                //$taxe = 0;
             }
         }
 

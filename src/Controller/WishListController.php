@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Services\WishListService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class WishListController extends AbstractController
@@ -30,16 +31,18 @@ class WishListController extends AbstractController
     }
 
     #[Route('/wishlist/add/{productId}', name: 'app_add_to_wishlist')]
-    public function addToWishList(string $productId): Response
+    public function addToWishList(Request $request, string $productId): Response
     {
         $this->wishlistService->addToWishList($productId);
         $wishlist = $this->wishlistService->getWishListDetails();
 
-        //return $this->redirectToRoute("app_wish_list");
+        if ($request->isXmlHttpRequest()) {
+            return $this->json($wishlist);
+        }
 
-        return $this->json($wishlist);
+        return $this->redirectToRoute('app_wish_list'); // fallback HTML
     }
-    #[Route('/wishlist/remove/{productId}', name: 'app_remove_to_wishlist')]
+    #[Route('/wishlist/remove/{productId}', name: 'app_remove_to_wishlist', methods: ['POST'])]
     public function removeToWishList(string $productId): Response
     {
         $this->wishlistService->removeToWishList($productId);
