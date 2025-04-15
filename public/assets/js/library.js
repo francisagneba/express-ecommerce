@@ -55,8 +55,6 @@ const fetchData = async (url, method = 'POST', body = null) => {
 };
 
 
-
-
 export const manageCartLink = async (event) => {
     event.preventDefault();
 
@@ -91,7 +89,7 @@ export const manageCartLink = async (event) => {
             }
         }
 
-        if (requestUrl.includes('/cart/remove/')) {
+        if (requestUrl.includes('/cart/delete/') || requestUrl.includes('/cart/delete-all/')) {
             if (product) {
                 addFlashMessage(`Produit (${product.name}) retiré du panier !`, "danger");
             } else {
@@ -99,8 +97,9 @@ export const manageCartLink = async (event) => {
             }
         }
 
+
         displayCart(cart);
-        updateHeaderCart();
+        updateHeaderCart(cart);
     } catch (error) {
         console.error("Erreur lors de la récupération des données : ", error);
         addFlashMessage("Une erreur est survenue lors de la mise à jour du panier. Veuillez réessayer.", "danger");
@@ -332,6 +331,10 @@ export const displayCart = (cart = null) => {
             cart_total_amount.innerHTML = `<span>${formatPrice((totalTTC + cart.data.carrier_price) / 100)}</span>`;
         });
     }
+
+    // Réattacher les événements sur les nouveaux éléments
+    addCartEventListenerToLink();
+
 };
 
 
@@ -422,7 +425,7 @@ export const updateHeaderCart = async (cart = null) => {
 
         let content = cart.items.map(item => {
             let product = item.product || {};
-            let productImage = product.imageUrls ? product.imageUrls[0] : 'placeholder.jpg';
+            let productImage = (product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : 'placeholder.jpg';
             let productName = product.name || 'Unknown Product';
             let productPrice = product.soldePrice || 0;
             let quantity = item.quantity || 0;
