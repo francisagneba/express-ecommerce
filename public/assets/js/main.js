@@ -1,7 +1,13 @@
+console.log("MAIN JS LOADED");
+
+
+
 import {
     displayCompare,
     displayCart,
     displayWishlist,
+    updateHeaderCart,
+    addRemoveItemFromHeaderCart,
     formatPrice,
     addCartEventListenerToLink,
     addWiwhListEventListenerToLink,
@@ -60,8 +66,13 @@ window.onload = () => {
         }
     }
 
+    updateHeaderCart().then(() => {
+        addRemoveItemFromHeaderCart(); // initialise les événements après affichage
+    });
+
     // ===================== GLOBAL EVENTS =====================
     addCartEventListenerToLink();
     addWiwhListEventListenerToLink();
     addCompareEventListener();
+
 };

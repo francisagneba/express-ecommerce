@@ -441,7 +441,10 @@ export const updateHeaderCart = async (cart = null) => {
                     =  ${formatPrice(productPrice * quantity / 100)}</div>
                     <div class="cart-item-price"></div>
                     <div class="cart-item-remove">
-                        <a href="/cart/delete-all/${product.id}/${item.quantity}">
+                        <a href="/cart/delete-all/${product.id}/${item.quantity}"
+                            class="remove-from-header-cart"
+                            data-product-id="${product.id}"
+                            data-quantity="${item.quantity}">
                             <i class="ti-close"></i>
                         </a>
                     </div>
@@ -457,4 +460,31 @@ export const updateHeaderCart = async (cart = null) => {
         cart_price_value_ttc.textContent = formatPrice(0);
         cart_list.innerHTML = "<div class='empty-cart'>Votre panier est vide !</div>";
     }
+
+    // après avoir modifié le DOM du header
+    addRemoveItemFromHeaderCart(); // important
+
+};
+
+export const addRemoveItemFromHeaderCart = () => {
+    const removeLinks = document.querySelectorAll('.remove-from-header-cart');
+
+    removeLinks.forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const productId = link.dataset.productId;
+            const quantity = link.dataset.quantity;
+
+            if (!productId || !quantity) return;
+
+            const res = await fetchData(`/cart/delete-all/${productId}/${quantity}`);
+
+            if (res && res.items) {
+                updateHeaderCart().then(() => {
+                    addRemoveItemFromHeaderCart(); // Réactive les listeners
+                });
+            }
+        });
+    });
 };
