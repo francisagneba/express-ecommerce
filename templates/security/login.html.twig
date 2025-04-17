@@ -18,7 +18,9 @@
 								<form method="post" class="ng-untouched ng-pristine ng-invalid">
 
 									{% if error %}
-										<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+										<div class="alert alert-danger">
+											{{ error.messageKey|trans(error.messageData, 'security') }}
+										</div>
 									{% endif %}
 
 									{% if app.user %}
@@ -30,45 +32,35 @@
 									{% endif %}
 
 									<div class="form-group mb-3">
-										<input type="text" required="" name="email" formcontrolname="email" placeholder="Your Email" class="form-control ng-untouched ng-pristine ng-invalid" autocomplete="email" value="{{ last_username }}" required autofocus>
+										<input type="text" name="email" placeholder="Your Email" class="form-control" autocomplete="email" value="{{ last_username }}" required autofocus>
 									</div>
+
 									<div class="form-group mb-3">
-										<input required="" type="password" formcontrolname="password" name="password" placeholder="Password" class="form-control ng-untouched ng-pristine ng-invalid" autocomplete="current-password" required>
+										<input type="password" name="password" placeholder="Password" class="form-control" autocomplete="current-password" required>
 									</div>
-									{# <div class="login_footer form-group mb-3">
-																											                                        <div class="chek-form">
-																											                                                    <div class="custome-checkbox"><input type="checkbox" name="checkbox" id="exampleCheckbox1" value="" class="form-check-input"><label for="exampleCheckbox1" class="form-check-label">
-																											                                                            <span>Remember
-																											                                                                                                                                                                                                                                    me</span>
-																											                                                        </label>
-																											                                                    </div>
-																											                                                </div>
-																											                                                <a href="#">Forgot password?</a>
-																											                                    </div> #}
+
 									<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
 									<div class="form-group mb-3">
-										<button type="submit" name="login" class="btn btn-fill-out btn-block">Log in</button>
+										<button type="submit" name="login" class="btn btn-fill-out btn-block">
+											Log in
+										</button>
 									</div>
 								</form>
-								<div class="different_login">
-									<span>
-										or</span>
-								</div>
-								{# <ul class="btn-login list_none text-center">
-																                                    <li>
-																                                        <a href="#" class="btn btn-facebook">
-																                                            <i class="ion-social-facebook"></i>Facebook</a>
-																                                    </li>
-																                                    <li>
-																                                        <a href="#" class="btn btn-google">
-																                                            <i class="ion-social-googleplus"></i>Google</a>
-																                                    </li>
-																                                </ul> #}
-								<div class="form-note text-center">Don't Have an Account?
-									<a href="/register">Sign up
-																																																																																																																								                                    now</a>
-								</div>
+
+								{# ✅ Affiche le bloc d'inscription uniquement si ce n’est pas une redirection depuis /admin #}
+								{% if not app.session.get('redirect_from_admin') %}
+									<div class="different_login">
+										<span>or</span>
+									</div>
+									<div class="form-note text-center">
+										Don't Have an Account?
+										<a href="/register">Sign up now</a>
+									</div>
+								{% else %}
+									{% do app.session.remove('redirect_from_admin') %}
+								{% endif %}
+
 							</div>
 						</div>
 					</div>

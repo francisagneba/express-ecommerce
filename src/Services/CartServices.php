@@ -90,7 +90,7 @@ class CartServices
 
     public function getFullCart(): array
     {
-        $cart = $this->get('cart');
+        $cart = $this->get('cart') ?? [];
         $fullCart = ['items' => []];
         $quantity_cart = 0;
         $subTotal = 0.0;

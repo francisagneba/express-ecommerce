@@ -52,6 +52,13 @@ class UserCrudController extends AbstractCrudController
             TextField::new('full_name'),
             EmailField::new('email'),
             AssociationField::new('addresses'),
+            ChoiceField::new('roles')
+                ->setChoices([
+                    'Utilisateur' => 'ROLE_USER',
+                    'Administrateur' => 'ROLE_ADMIN',
+                ])
+                ->allowMultipleChoices()
+                ->renderExpanded(), // ou .renderAsBadges() pour afficher les rôles joliment
             TextField::new('password')
                 ->setFormType(RepeatedType::class)
                 ->setFormTypeOptions([
