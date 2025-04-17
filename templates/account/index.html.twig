@@ -28,7 +28,7 @@
 								<li class="nav-item">
 									<a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">
 										<i class="ti-location-pin"></i>My
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                                    Address</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                                    Address</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true">
@@ -49,13 +49,11 @@
 										<h3>Dashboard</h3>
 									</div>
 									<div class="card-body">
-										<p>From your account dashboard. you can easily check &amp; view your
+										<p>Depuis le tableau de bord de votre compte, vous pouvez facilement vérifier et afficher vos commandes récentes, gérer vos
 											<a href="javascript:void(0);" onclick="$('#orders-tab').trigger('click')">recent orders</a>, manage your
-											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            addresses</a>
+											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">adresses de livraison et de facturation</a>
 											and
-											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            account details.</a>
+											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">modifier votre mot de passe et les détails de votre compte.</a>
 										</p>
 									</div>
 								</div>
@@ -69,10 +67,10 @@
 										<p>From your account dashboard. you can easily check &amp; view your
 											<a href="javascript:void(0);" onclick="$('#orders-tab').trigger('click')">recent orders</a>, manage your
 											<a href="javascript:void(0);" onclick="$('#address-tab').trigger('click')">shipping and billing
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            addresses</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                                            addresses</a>
 											and
 											<a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit your password and
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                                            account details.</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                                            account details.</a>
 										</p>
 										<button type="submit" class="btn btn-fill-out py-2" name="submit" value="Submit">Logout</button>
 									</div>
@@ -88,33 +86,41 @@
 											<table class="table">
 												<thead>
 													<tr>
-														<th>Order</th>
-														<th>Date</th>
-														<th>Status</th>
+														<th>Product</th>
 														<th>Total</th>
-														<th>Actions</th>
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
-														<td>#1234</td>
-														<td>March 15, 2020</td>
-														<td>Processing</td>
-														<td>$78.00 for 1 item</td>
-														<td>
-															<a href="#" class="btn btn-fill-out btn-sm">View</a>
-														</td>
-													</tr>
-													<tr>
-														<td>#2366</td>
-														<td>June 20, 2020</td>
-														<td>Completed</td>
-														<td>$81.00 for 1 item</td>
-														<td>
-															<a href="#" class="btn btn-fill-out btn-sm">View</a>
-														</td>
-													</tr>
+													{% for item in cart.items %}
+														<tr>
+															<td>
+																<img src="/assets/images/products/{{item.product.imageUrls[0]}}" width="30" height="30" alt="">
+																{{ item.product.name }}
+																<span class="product-qty">x
+																	{{ item.quantity}}</span>
+															</td>
+															<td>{{ ((item.product.soldePrice / 100) * item.quantity) | format_currency('EUR') }}</td>
+														</tr>
+													{% endfor %}
 												</tbody>
+												<tfoot>
+													<tr>
+														<th>SubTotal HT</th>
+														<td class="product-subtotal">{{ (cart.data.subTotalHT / 100) | format_currency('EUR') }}</td>
+													</tr>
+													<tr>
+														<th>Taxe</th>
+														<td class="product-subtotal">{{ (cart.data.taxe / 100) | format_currency('EUR') }}</td>
+													</tr>
+													<tr>
+														<th>Shipping</th>
+														<td>{{ (cart.data.carrier_price / 100) | format_currency('EUR') }}</td>
+													</tr>
+													<tr>
+														<th>Total</th>
+														<td class="product-subtotal">{{ ((cart.data.subTotalTTC + cart.data.carrier_price) / 100) | format_currency('EUR') }}</td>
+													</tr>
+												</tfoot>
 											</table>
 										</div>
 									</div>
