@@ -27,26 +27,35 @@ export const addFlashMessage = (message, status = "success") => {
 };
 
 const fetchData = async (url, method = 'POST', body = null) => {
+    const forcePostRoutes = ['/cart/add/', '/wishlist/add/', '/compare/add/'];
+
+    // Assure-toi d'utiliser POST pour ces routes
+    if (forcePostRoutes.some(route => url.includes(route))) {
+        method = 'POST';
+    }
+
     try {
-        console.log(`Appel AJAX vers : ${url}`);
-        const response = await fetch(url, {
-            method: method,
+        const options = {
+            method,
             headers: {
                 'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json'
-            },
-            body: body ? JSON.stringify(body) : null
-        });
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
 
-        const contentType = response.headers.get('content-type');
+        if (['POST', 'PUT', 'PATCH'].includes(method) && body !== null) {
+            options.headers['Content-Type'] = 'application/json';
+            options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(url, options);
         const text = await response.text();
+        const contentType = response.headers.get('content-type');
 
-        if (response.ok && contentType && contentType.includes('application/json')) {
+        if (response.ok && contentType?.includes('application/json')) {
             return JSON.parse(text);
         } else {
-            console.warn("Contenu inattendu : ", text);
-            throw new Error("Réponse HTML ou autre contenu inattendu");
+            throw new Error(`Réponse inattendue : ${text}`);
         }
     } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
@@ -55,11 +64,12 @@ const fetchData = async (url, method = 'POST', body = null) => {
 };
 
 
+
 export const manageCartLink = async (event) => {
     event.preventDefault();
 
-    let link = event.target.href ? event.target : event.target.parentNode;
-    let requestUrl = link.href;
+    let link = event.currentTarget.closest("a");
+    let requestUrl = link ? link.href : null;
 
     // Vérifiez que l'URL est définie avant de procéder
     if (!requestUrl) {
@@ -72,17 +82,21 @@ export const manageCartLink = async (event) => {
         const cart = await fetchData(requestUrl);
 
         // Vérifiez que l'URL contient un identifiant de produit valide
-        let productId = requestUrl.split('/')[5];
+        const urlParts = requestUrl.split('/');
+        const productId = urlParts.length > 5 ? urlParts[5] : null;
+
         if (!productId) {
             console.error("L'ID du produit est introuvable dans l'URL !");
             addFlashMessage("Une erreur est survenue. Veuillez réessayer.", "danger");
             return;
         }
 
+        // Récupérer les informations du produit
         let product = await fetchData("/product/get/" + productId);
 
+        // Gérer les messages selon le type d'action (ajouter ou supprimer)
         if (requestUrl.includes('/cart/add/')) {
-            if (product) {
+            if (product && product.name) {
                 addFlashMessage(`Produit (${product.name}) ajouté au panier !`);
             } else {
                 addFlashMessage("Produit ajouté au panier !");
@@ -90,14 +104,14 @@ export const manageCartLink = async (event) => {
         }
 
         if (requestUrl.includes('/cart/delete/') || requestUrl.includes('/cart/delete-all/')) {
-            if (product) {
+            if (product && product.name) {
                 addFlashMessage(`Produit (${product.name}) retiré du panier !`, "danger");
             } else {
                 addFlashMessage("Produit retiré du panier !", "danger");
             }
         }
 
-
+        // Mettre à jour l'affichage du panier
         displayCart(cart);
         updateHeaderCart(cart);
     } catch (error) {
@@ -105,6 +119,7 @@ export const manageCartLink = async (event) => {
         addFlashMessage("Une erreur est survenue lors de la mise à jour du panier. Veuillez réessayer.", "danger");
     }
 };
+
 
 
 
@@ -199,7 +214,7 @@ export const displayCompare = async (compare = null) => {
                 `
                 nameContainer.innerHTML += `
                 <td class="product_name">
-                    <a href="shop-product-detail.html">${product.name}</a>
+                    <a href="/product/${product.slug}">${product.name}</a>
                 </td>
                 `
                 priceContainer.innerHTML += `
@@ -358,7 +373,7 @@ export const displayWishlist = (wishlist = null) => {
                     <a href="#"><img width="50" height="50" alt="product1" src="/assets/images/products/${product.imageUrls[0]}"></a>
                 </td>
                 <td data-title="Product" class="product-name">
-                    <a href="#">${product.name}</a>
+                    <a href="/product/${product.slug}">${product.name}</a>
                 </td>
                 <td data-title="Price" class="product-price">
                     ${formatPrice(product.soldePrice / 100)}</td>
@@ -385,75 +400,68 @@ export const displayWishlist = (wishlist = null) => {
     addWiwhListEventListenerToLink()
 };
 
+// Met à jour l'affichage du panier dans l'en-tête
 export const updateHeaderCart = async (cart = null) => {
-    let cart_count = document.querySelector(".cart_count");
-    let cart_list = document.querySelector(".cart_list");
-    let cart_price_value_ht = document.querySelector(".cart_price_value_ht");
-    let cart_taxe_value = document.querySelector(".cart_taxe_value");
-    let cart_price_value_ttc = document.querySelector(".cart_price_value_ttc");
+    const cart_count = document.querySelector(".cart_count");
+    const cart_list = document.querySelector(".cart_list");
+    const cart_price_value_ht = document.querySelector(".cart_price_value_ht");
+    const cart_taxe_value = document.querySelector(".cart_taxe_value");
+    const cart_price_value_ttc = document.querySelector(".cart_price_value_ttc");
 
-    // Vérification que les éléments existent
+    // Vérifie si les éléments du DOM sont bien présents
     if (!cart_count || !cart_list || !cart_price_value_ht) {
         console.warn("Un ou plusieurs éléments du header cart sont introuvables.");
         return;
     }
 
+    // Si aucun panier passé en paramètre, on récupère les données via l'API
     if (!cart) {
         cart = await fetchData("/cart/get");
     }
 
-    if (cart && cart.items && cart.items.length > 0) {
-        cart_count.textContent = cart.items.reduce((total, item) => total + item.quantity, 0);
+    // Si panier valide avec des articles
+    if (cart?.items?.length > 0) {
+        const totalItems = cart.items.reduce((total, item) => total + item.quantity, 0);
+        cart_count.textContent = totalItems;
 
-        let subTotal = cart.items.reduce((total, item) => {
-            let productPrice = item.product?.soldePrice || 0;
-            return total + productPrice * item.quantity;
-        }, 0);
+        // Données de prix depuis l'objet "cart.data"
+        const subTotalHT = (cart.data?.subTotalHT || 0) / 100;
+        const taxe = (cart.data?.taxe || 0) / 100;
+        const subTotalTTC = (cart.data?.subTotalTTC || 0) / 100;
 
-        console.log(cart); // Vérifiez ce que contient `cart`
-        console.log(cart?.data?.subTotalHT); // Vérifiez si `subTotalHT` est bien défini
+        cart_price_value_ht.textContent = formatPrice(subTotalHT);
+        cart_taxe_value.textContent = formatPrice(taxe);
+        cart_price_value_ttc.textContent = formatPrice(subTotalTTC);
 
-        if (!cart || !cart.data) {
-            console.warn("cart ou cart.data est indéfini :", cart);
-            return;
-        }
-
-        cart_price_value_ht.textContent = formatPrice((cart.data?.subTotalHT || 0) / 100);
-        cart_taxe_value.textContent = formatPrice((cart.data?.taxe || 0) / 100);
-        cart_price_value_ttc.textContent = formatPrice((cart.data?.subTotalTTC || 0) / 100);
-
-
-        let content = cart.items.map(item => {
-            let product = item.product || {};
-            let productImage = (product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : 'placeholder.jpg';
-            let productName = product.name || 'Unknown Product';
-            let productPrice = product.soldePrice || 0;
-            let quantity = item.quantity || 0;
+        // Génération dynamique de la liste des articles
+        cart_list.innerHTML = cart.items.map(item => {
+            const product = item.product || {};
+            const image = product.imageUrls?.[0] || 'placeholder.jpg';
+            const name = product.name || 'Produit inconnu';
+            const price = product.soldePrice || 0;
+            const quantity = item.quantity;
 
             return `
-            <div class="cart-item">
-                <div class="cart-item-image">
-                    <img src="/assets/images/products/${productImage}" alt="${productName}">
-                </div>
-                <div class="cart-item-info">
-                    <div class="cart-item-name">${productName}</div>
-                    <div>${quantity}  x  ${formatPrice(productPrice / 100)} 
-                    =  ${formatPrice(productPrice * quantity / 100)}</div>
-                    <div class="cart-item-price"></div>
-                    <div class="cart-item-remove">
-                        <a href="/cart/delete-all/${product.id}/${item.quantity}"
-                            class="remove-from-header-cart"
-                            data-product-id="${product.id}"
-                            data-quantity="${item.quantity}">
-                            <i class="ti-close"></i>
-                        </a>
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="/assets/images/products/${image}" alt="${name}">
                     </div>
-                </div>
-            </div>`;
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${name}</div>
+                        <div>${quantity} x ${formatPrice(price / 100)} = ${formatPrice(price * quantity / 100)}</div>
+                        <div class="cart-item-remove">
+                            <a href="/cart/delete-all/${product.id}/${quantity}"
+                               class="remove-from-header-cart"
+                               data-product-id="${product.id}"
+                               data-quantity="${quantity}">
+                                <i class="ti-close"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>`;
         }).join("");
-
-        cart_list.innerHTML = content;
     } else {
+        // Panier vide
         cart_count.textContent = "0";
         cart_price_value_ht.textContent = formatPrice(0);
         cart_taxe_value.textContent = formatPrice(0);
@@ -461,29 +469,69 @@ export const updateHeaderCart = async (cart = null) => {
         cart_list.innerHTML = "<div class='empty-cart'>Votre panier est vide !</div>";
     }
 
-    // après avoir modifié le DOM du header
-    addRemoveItemFromHeaderCart(); // important
-
+    // Réattache les événements après mise à jour du DOM
+    bindAddToCartButtons();
+    addRemoveItemFromHeaderCart();
 };
 
-export const addRemoveItemFromHeaderCart = () => {
-    const removeLinks = document.querySelectorAll('.remove-from-header-cart');
+export const bindAddToCartButtons = () => {
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        const clone = button.cloneNode(true);
+        button.replaceWith(clone);
 
-    removeLinks.forEach(link => {
-        link.addEventListener('click', async (e) => {
+        clone.addEventListener('click', async (e) => {
             e.preventDefault();
 
-            const productId = link.dataset.productId;
-            const quantity = link.dataset.quantity;
+            const productId = clone.dataset.productId;
+            const quantity = parseInt(clone.dataset.quantity || "1");
 
-            if (!productId || !quantity) return;
+            if (!productId || isNaN(quantity)) {
+                console.warn("ID produit ou quantité invalide :", clone);
+                return;
+            }
 
-            const res = await fetchData(`/cart/delete-all/${productId}/${quantity}`);
+            // Désactive le bouton
+            clone.disabled = true;
 
-            if (res && res.items) {
-                updateHeaderCart().then(() => {
-                    addRemoveItemFromHeaderCart(); // Réactive les listeners
-                });
+            try {
+                const res = await fetchData(`/cart/add/${productId}/${quantity}`, 'POST');
+                if (res?.items) {
+                    await updateHeaderCart(res);
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'ajout au panier :", error);
+            } finally {
+                // Réactive le bouton une fois l'opération terminée (ou en cas d'erreur)
+                clone.disabled = false;
+            }
+        });
+    });
+};
+
+
+export const addRemoveItemFromHeaderCart = () => {
+    document.querySelectorAll('.remove-from-header-cart').forEach(link => {
+        const clone = link.cloneNode(true);
+        link.replaceWith(clone); // supprime les anciens listeners
+
+        clone.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const productId = clone.dataset.productId;
+            const quantity = clone.dataset.quantity;
+
+            if (!productId || !quantity) {
+                console.warn("Produit ou quantité manquante :", clone);
+                return;
+            }
+
+            try {
+                const res = await fetchData(`/cart/delete-all/${productId}/${quantity}`);
+                if (res?.items) {
+                    await updateHeaderCart(res);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la suppression :", error);
             }
         });
     });

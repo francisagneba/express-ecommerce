@@ -52,11 +52,11 @@ class CartController extends AbstractController
         ]);
     }
 
-    #[Route('/cart/add/{id}/{count}', name: 'app_add_to_cart')]
+    #[Route('/cart/add/{id}/{count}', name: 'app_add_to_cart', methods: ["POST", "GET"], defaults: ['count' => 1])]
     public function addToCart(int $id, Request $request, int $count = 1): Response
     {
         try {
-            if (!$request->isXmlHttpRequest()) {
+            if ($request->getMethod() === 'POST' && !$request->isXmlHttpRequest()) {
                 return $this->json([
                     'error' => 'Unexpected request type. Please use AJAX.'
                 ], Response::HTTP_BAD_REQUEST);
@@ -69,6 +69,7 @@ class CartController extends AbstractController
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     #[Route('/cart/delete/{id}/1', name: 'cart_delete')]
     public function deleteFromCart(int $id, Request $request): Response
