@@ -17,15 +17,20 @@ class CartServices
     private $session;
     private $repoProduct;
     private $carrierRepo;
-    // private $tva = 0.2;
-    // private $taxe;
     private $settingRepo;
+    private $orderDetailsRepo; // 🔹 Ajout
 
-    public function __construct(RequestStack $requestStack, ProductRepository $repoProduct, CarrierRepository $carrierRepo, OrderDetailsRepository $orderDetailsRepo, SettingRepository $settingRepo)
-    {
-        $this->session = $requestStack->getSession(); // Obtenir la session à partir de RequestStack
+    public function __construct(
+        RequestStack $requestStack,
+        ProductRepository $repoProduct,
+        CarrierRepository $carrierRepo,
+        OrderDetailsRepository $orderDetailsRepo, // 🔹 Ajout
+        SettingRepository $settingRepo
+    ) {
+        $this->session = $requestStack->getSession();
         $this->repoProduct = $repoProduct;
         $this->carrierRepo = $carrierRepo;
+        $this->orderDetailsRepo = $orderDetailsRepo; // 🔹 Ajout
         $this->settingRepo = $settingRepo;
     }
 
