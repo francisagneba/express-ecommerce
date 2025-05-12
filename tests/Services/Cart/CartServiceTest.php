@@ -117,4 +117,25 @@ class CartServiceTest extends TestCase
 
         $this->cartService->deleteFromCart($productId);
     }
+
+    public function testGetFullCartReturnsEmptyStructure(): void
+    {
+        $this->sessionMock->method('get')->willReturn(null);
+
+        $result = $this->cartService->getFullCart();
+
+        $this->assertArrayHasKey('items', $result);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertSame([], $result['items']);
+        $this->assertEquals([
+            'subTotalHT' => 0,
+            'subTotalTTC' => 0,
+            'subTotalWithCarrier' => 0,
+            'quantity' => 0,
+            'carrier_id' => null,
+            'carrier_name' => 'Aucun transporteur',
+            'carrier_price' => 0,
+            'taxe' => 0
+        ], $result['data']);
+    }
 }
