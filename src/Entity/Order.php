@@ -315,4 +315,9 @@ class Order
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return 'Order #' . $this->getId(); // ou n'importe quelle info représentative
+    }
 }
