@@ -80,8 +80,12 @@ class CartServices
     public function update($key, array $cart): void
     {
         $this->session->set($key, $cart);
-        $this->session->set('cartData', $this->getFullCart());
+
+        if (!in_array($key, ['cartData', 'carrier'])) {
+            $this->session->set('cartData', $this->getFullCart());
+        }
     }
+
 
     public function updateCarrier($carrier): void
     {
